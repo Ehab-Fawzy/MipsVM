@@ -12,12 +12,45 @@ import javax.swing.JSplitPane;
 import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
 import java.awt.Color;
+import java.awt.Insets;
+import javax.swing.JLabel;
+import com.jgoodies.forms.factories.DefaultComponentFactory;
+import javax.swing.JTextField;
 import java.awt.SystemColor;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.border.LineBorder;
+import java.awt.Component;
 
 public class MipsVM_GUI {
 
 	private JFrame frmMipsvm;
 	private JSeparator separator;
+	private JSplitPane splitWindow;
+	private JTabbedPane rightPage , leftPage;
+	private JScrollPane registerScroll ;
+	private JTextArea regValue , regName;
+	private JScrollPane TextSegment;
+	private JScrollPane DataSegment;
+	private JTextArea textSegmentValues;
+	private JTextArea TextSegmentNames;
+	private JTextArea DataSegmentValues;
+	private JTextArea DataSegmentNames;
+	private JTextField txtAdds;
+	private JTextField txtRType;
+	private JSeparator separator_1;
+	private JTextArea note;
+	private JSeparator separator_2;
+	private JButton btnNewButton_1;
+	private JButton btnRun;
+	private JTextField textField;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -43,7 +76,23 @@ public class MipsVM_GUI {
 	}
 	
 	public void staticInit() {
+		String registerName = "";
+		for ( int i = 0; i < 32; ++i ) {
+			if ( i < 10 ) {
+				registerName += ( " R   " + i + "   = \n" );
+			}
+			else {
+				registerName += (" R " + i + "   = \n");
+			}
+		}
+		regName.setText(registerName);
 		
+		
+		String registerValues = "";
+		for ( int i = 0; i < 32; ++i ) {
+			registerValues += "0\n";
+		}
+		regValue.setText(registerValues);
 	}
 	
 	/**
@@ -57,53 +106,233 @@ public class MipsVM_GUI {
 		
 		separator = new JSeparator();
 		
-		JSplitPane splitWindow = new JSplitPane();
+		splitWindow = new JSplitPane();
+		
+		JLabel lblInstruct = DefaultComponentFactory.getInstance().createLabel("Current Assembly Code");
+		lblInstruct.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInstruct.setFont(new Font("Vrinda", Font.BOLD, 14));
+		
+		txtAdds = new JTextField();
+		txtAdds.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
+		txtAdds.setHorizontalAlignment(SwingConstants.CENTER);
+		txtAdds.setEditable(false);
+		txtAdds.setText("add  $s0  ,  $s1  ,  $s2");
+		txtAdds.setBackground(SystemColor.menu);
+		txtAdds.setColumns(10);
+		
+		JLabel lblNewJgoodiesLabel = DefaultComponentFactory.getInstance().createLabel("Instruction Type");
+		lblNewJgoodiesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewJgoodiesLabel.setFont(new Font("Vrinda", Font.BOLD, 14));
+		
+		txtRType = new JTextField();
+		txtRType.setText("R - Type");
+		txtRType.setHorizontalAlignment(SwingConstants.CENTER);
+		txtRType.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
+		txtRType.setEditable(false);
+		txtRType.setColumns(10);
+		txtRType.setBackground(SystemColor.menu);
+		
+		separator_1 = new JSeparator();
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		
+		note = new JTextArea();
+		note.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		note.setLineWrap(true);
+		note.setBorder(new LineBorder(new Color(0, 0, 0)));
+		note.setEditable(false);
+		note.setBackground(SystemColor.menu);
+		
+		separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		
+		btnNewButton_1 = new JButton("Run All");
+		btnNewButton_1.setFont(new Font("Vrinda", Font.BOLD, 14));
+		
+		btnRun = new JButton("Next Step");
+		btnRun.setFont(new Font("Vrinda", Font.BOLD, 14));
+		
+		JLabel lblProgramCounter = DefaultComponentFactory.getInstance().createLabel("PC");
+		lblProgramCounter.setBackground(SystemColor.menu);
+		lblProgramCounter.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProgramCounter.setFont(new Font("Vrinda", Font.BOLD, 16));
+		
+		textField = new JTextField();
+		textField.setFont(new Font("Vrinda", Font.BOLD, 18));
+		textField.setText("35");
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setEditable(false);
+		textField.setBackground(SystemColor.menu);
+		textField.setColumns(10);
+		
+		table = new JTable();
+		table.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		table.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		table.setEnabled(false);
+		table.setBackground(SystemColor.menu);
+		table.setBorder(new LineBorder(new Color(0, 0, 0)));
+		table.setRowHeight(35);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"opcode", "ra", "rb", "rd", "shmant", "funct"},
+				{"000000", "10001", "10010", "10000", "00000", "10000"},
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column", "New column", "New column"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				true, true, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		
+        for ( int i = 0; i < 6; ++i ) {
+        	table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
+        }
+        
+        String s = "add value in register $s1 with value in register $s2 and put the result in register $s0";
+		note.setText(s);
+		
+		
+		//panel.setVisible(false);
 		GroupLayout groupLayout = new GroupLayout(frmMipsvm.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(splitWindow, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(10)
-							.addComponent(splitWindow, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(separator, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblNewJgoodiesLabel, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+										.addComponent(txtRType, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblProgramCounter, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+										.addComponent(textField, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+									.addGap(8))
+								.addComponent(lblInstruct, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(txtAdds, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+									.addGap(4)))
+							.addGap(1)
+							.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(11)
+									.addComponent(note, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, 8, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(btnNewButton_1, GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+										.addComponent(btnRun, GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(table, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))))
+						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(splitWindow, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+					.addComponent(splitWindow, GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-					.addGap(121))
+					.addGap(10)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(table, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+											.addComponent(btnRun, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+										.addComponent(separator_2, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE)
+										.addComponent(note, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE))
+									.addPreferredGap(ComponentPlacement.RELATED))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblInstruct)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtAdds, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+									.addGap(15)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblNewJgoodiesLabel)
+										.addComponent(lblProgramCounter))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(txtRType, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+										.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addGap(12)))
+							.addGap(11))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 144, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
 		);
 		
-		JTabbedPane rightPage = new JTabbedPane(JTabbedPane.TOP);
+		rightPage = new JTabbedPane(JTabbedPane.TOP);
 		splitWindow.setRightComponent(rightPage);
 		
-		JTextArea textSegment = new JTextArea();
-		rightPage.addTab("Text Segment", null, textSegment, null);
+		TextSegment = new JScrollPane();
+		rightPage.addTab("Text Segment", null, TextSegment, null);
 		
-		JTextArea textArea = new JTextArea();
-		rightPage.addTab("Data Segment", null, textArea, null);
+		textSegmentValues = new JTextArea();
+		TextSegment.setViewportView(textSegmentValues);
 		
-		JTabbedPane leftPage = new JTabbedPane(JTabbedPane.TOP);
+		TextSegmentNames = new JTextArea();
+		TextSegmentNames.setEnabled(false);
+		TextSegmentNames.setEditable(false);
+		TextSegmentNames.setColumns(5);
+		TextSegmentNames.setBackground(new Color(240, 248, 255));
+		TextSegmentNames.setDisabledTextColor(new Color(0, 0, 139));
+		TextSegment.setRowHeaderView(TextSegmentNames);
+		
+		DataSegment = new JScrollPane();
+		rightPage.addTab("Data Segment", null, DataSegment, null);
+		
+		DataSegmentValues = new JTextArea();
+		DataSegment.setViewportView(DataSegmentValues);
+		
+		DataSegmentNames = new JTextArea();
+		DataSegmentNames.setEnabled(false);
+		DataSegmentNames.setEditable(false);
+		DataSegmentNames.setColumns(5);
+		DataSegmentNames.setBackground(new Color(240, 248, 255));
+		DataSegmentNames.setDisabledTextColor(new Color(0, 0, 139));
+		DataSegment.setRowHeaderView(DataSegmentNames);
+		
+		leftPage = new JTabbedPane(JTabbedPane.TOP);
 		leftPage.setVerifyInputWhenFocusTarget(false);
 		leftPage.setForeground(Color.BLACK);
 		splitWindow.setLeftComponent(leftPage);
 		
-		JScrollPane registerScroll = new JScrollPane();
+		registerScroll = new JScrollPane();
 		registerScroll.setVerifyInputWhenFocusTarget(false);
 		leftPage.addTab("Register File ", null, registerScroll, null);
 		
-		JTextArea regValue = new JTextArea();
+		regValue = new JTextArea();
+		regValue.setForeground(new Color(0, 0, 255));
+		regValue.setDisabledTextColor(new Color(0, 0, 255));
+		regValue.setMargin(new Insets(2, 5, 2, 2));
+		regValue.setEditable(false);
 		registerScroll.setViewportView(regValue);
 		
-		JTextArea regName = new JTextArea();
-		regName.setBackground(SystemColor.inactiveCaptionBorder);
+		regName = new JTextArea();
+		regName.setDisabledTextColor(new Color(0, 0, 139));
+		regName.setEnabled(false);
+		regName.setEditable(false);
+		regName.setBackground(new Color(240, 248, 255));
 		regName.setColumns(5);
 		registerScroll.setRowHeaderView(regName);
 		splitWindow.setDividerLocation(200);
@@ -115,9 +344,9 @@ public class MipsVM_GUI {
 		
 		JMenu mnNewMenu = new JMenu("New menu");
 		menuBar.add(mnNewMenu);
-		//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		
-		//staticInit();
+		staticInit();
 	}
 }
