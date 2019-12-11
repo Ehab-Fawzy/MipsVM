@@ -37,17 +37,26 @@ public class MipsVM_GUI_Interface {
 		if ( instructionList == null ) {
 			instructionList = new Vector<String>();
 		}
+		else {
+			instructionList.clear();
+		}
 		
 		if ( labelToIdx == null ) {
 			labelToIdx = new HashMap<Integer, Integer>();
+		} else {
+			labelToIdx.clear();
 		}
 		
 		if ( compressLabel == null ) {
 			compressLabel = new HashMap<String, Integer>();
+		} else {
+			compressLabel.clear();
 		}
 		
 		if ( instructionSet == null ) {
 			instructionSet = new Vector<MipsInstructions>();
+		} else {
+			instructionSet.clear();
 		}
 	
 		updateMemory();
