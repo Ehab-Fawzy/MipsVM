@@ -118,35 +118,92 @@ public class MipsParser {
 		{	
 			return false ;
 		}
-		for (int i = 1 ; i < split.length ; i++ )
+		if (map.get(split[0]).equals("R"))
 		{	
-			if (Character.toString(split[i].charAt(1)).equals("s"))
+			for (int i = 1 ; i < split.length ; i++ )
+			{	
+				if (Character.toString(split[i].charAt(1)).equals("s"))
+				{
+				  int x = Integer.parseInt(split[i].substring(2));
+				  if ( !((x >= 0) && (x<=7)))	
+				  {		  
+					  return false ;
+				  }  
+				}	
+				else if (Character.toString(split[i].charAt(1)).equals("t"))
+				{
+				  int x = Integer.parseInt(split[i].substring(2));
+		
+				  if (!((x >= 0) && (x<=9)))	
+				  { 			
+					  return false ;
+				  }
+				}	
+				else 
+				{		
+					if (!split[i].equals("$0"))
+					{ 		 
+					  return false ; 
+					}
+				}
+			}	
+
+		}
+		else if (map.get(split[0]).equals("I"))	
+		{	
+			for (int i = 1 ; i < split.length-1 ; i++ )
+			{	
+				if (Character.toString(split[i].charAt(1)).equals("s"))
+				{
+				  int x = Integer.parseInt(split[i].substring(2));
+				  if ( !((x >= 0) && (x<=7)))	
+				  {		  
+					  return false ;
+				  }  
+				}	
+				else if (Character.toString(split[i].charAt(1)).equals("t"))
+				{
+				  int x = Integer.parseInt(split[i].substring(2));
+		
+				  if (!((x >= 0) && (x<=9)))	
+				  { 			
+					  return false ;
+				  }
+				}	
+				else 
+				{		
+					if (!split[i].equals("$0"))
+					{ 		 
+					  return false ; 
+					}
+				}
+			}				
+		}
+		else	
+		{	
+			if (Character.toString(split[1].charAt(1)).equals("s"))
 			{
-			  int x = Integer.parseInt(split[i].substring(2));
+			  int x = Integer.parseInt(split[1].substring(2));
 			  if ( !((x >= 0) && (x<=7)))	
 			  {		  
 				  return false ;
 			  }  
-			}	
-			else if (Character.toString(split[i].charAt(1)).equals("t"))
+			}
+			else if (Character.toString(split[1].charAt(1)).equals("t"))
 			{
-			  int x = Integer.parseInt(split[i].substring(2));
+			  int x = Integer.parseInt(split[1].substring(2));
 	
 			  if (!((x >= 0) && (x<=9)))	
 			  { 			
 				  return false ;
 			  }
-			}	
-			else 
-			{		
-				if (!split[i].equals("$0"))
-				{ 		 
-				  return false ; 
-				}
 			}
-		}	
-
-		return true ;
+			else
+				return false ;
+			
+		}
+			
+	return true ;
 	}
 	public static int GetNumberOfArguments (String type)
 	{
