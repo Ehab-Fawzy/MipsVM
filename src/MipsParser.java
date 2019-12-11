@@ -12,10 +12,40 @@ public class MipsParser {
 
 	public MipsInstructions parse( String line ) {
 		
-	    String[] split = line.split(",") ;
-	    String instruction = split[0];
+		initialize() ;
+		String func = null ;
+        int indexOfSpace = line.indexOf(" ");
+        func = line.substring(0,indexOfSpace);
+        line = line.substring(indexOfSpace+1);
+        line = func+','+line;
+        String [] split = line.split(",") ;
+        
+        MipsInstructions ret = null;
+        
+        if (checkop(split))
+        {		
+        	if (checkArg(split))
+        	{	
+        		if (checkReg(split))
+        		{	
+        			
+        		}
+        		else
+        		{	
+        			return ret ;
+        		}
+        	}
+        	else
+        	{	
+        		return ret;
+        	}
+        }
+        else
+        {	
+        	return ret ;
+        }
 	    
-		MipsInstructions ret = null;
+		
 		
 		return ret;
 	}
@@ -41,28 +71,79 @@ public class MipsParser {
 	    map.put("andi", "I");
 	    map.put("ori", "I");
 	    map.put("slti", "I");
-
-	    map.put("lui", "value1");
-	    map.put("jr", "value2");
-	    map.put("j", "value3");
+	    map.put("lui", "I");
+	    
+	    map.put("jr", "J");
+	    map.put("j", "J");
 	    map.put("beq", "value1");
 	    map.put("bne", "value2");
 	}
-	public static MipsInstructions checkop (String [] split)
+	public static boolean checkop (String [] split)
 	{
 		if (map.get(split[0]) == null)
 		{	
-			System.out.println( "You entered wrong operand"); // check the printed message
-			return null ;
+			return false ;
 		}
-		else {
-		   if (!(GetNumberOfArguments(map.get(split[0])) == split.length-1))
-		   {	
-		     System.out.println(split[0]+ "Take three parameters");	
-		     return null ;
+		else 
+		{
+		   if (split[0].equals("lw") || split[0].equals("sw") || split[0].equals("lui"))	
+		   {   
+			 if (! (split.length ==3))  
+				return false ;	 
 		   }
-		} 	
-		return null ;
+		   else
+		   {	   
+		       if (!(GetNumberOfArguments(map.get(split[0])) == split.length-1))
+		       {	
+		         return false ;
+		       }
+		   }
+		 }
+		return true ;
+	}
+	public static boolean checkArg (String [] split)
+	{
+		for (int i = 1 ; i< split.length ;i++ )
+		{	
+			if (!(Character.toString(split[i].charAt(0))).equals("$"))
+			{	
+				return false;
+			}
+		}
+		return true ;
+	}
+	public static boolean checkReg (String [] split)
+	{
+		if (split[1].equals("$0"))
+		{	
+			return false ;
+		}
+		for (int i = 1 ; i < split.length ; i++ )
+		{	
+			if (Character.toString(split[i].charAt(1)).equals("s"))
+			{
+			  int x = Integer.parseInt(split[i].substring(2));
+			  if ( !((x >= 0) && (x<=7)))	
+			  {		  
+				  return false ;
+			  }  
+			}	
+			else if (Character.toString(split[i].charAt(1)).equals("t"))
+			{
+			  int x = Integer.parseInt(split[i].substring(2));
+	
+			  if (!((x >= 0) && (x<=9)))	
+			  { 			
+				  return false ;
+			  }
+			}	
+			else
+			{	
+				return false ;
+			}
+		}	
+
+		return true ;
 	}
 	public static int GetNumberOfArguments (String type)
 	{
@@ -77,7 +158,7 @@ public class MipsParser {
 		}
 		else 
 		{	
-			
+			number = 1 ;
 		}
 		return number ;
 	}
