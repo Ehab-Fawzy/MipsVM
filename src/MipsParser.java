@@ -9,7 +9,6 @@ import java.lang.Math;
 public class MipsParser {
 	
     public static Map <String, String> map = new HashMap<String, String>();
-    
     public static Map <String, Integer> func = new HashMap<String, Integer>();
     public static Map <String, Integer> opcode = new HashMap<String, Integer>();
 
@@ -44,17 +43,8 @@ public class MipsParser {
         			    ret = new MipsInstructions (opcode.get(split[0]),'I',0,0,0) ;
         			}
         		}
-        		else
-        			return null ;
-        	}
-        	else
-        		return null;
+             }		
         }
-        else
-        	return null ;
-	    
-		
-		
 		return ret;
 	}
 	
@@ -63,29 +53,6 @@ public class MipsParser {
 		int ret = 0;
 		
 		return ret;
-	}
-	public static void initialize()
-	{
-	    map.put("add", "R");
-	    map.put("or", "R");
-	    map.put("sub", "R");
-	    map.put("and", "R");
-	    map.put("sll", "R");
-	    map.put("slt", "R");
-
-	    map.put("addi","I");
-	    map.put("lw", "I");
-	    map.put("sw", "I");
-	    map.put("andi", "I");
-	    map.put("ori", "I");
-	    map.put("slti", "I");
-	    map.put("lui", "I");
-	    
-	    map.put("jr", "J");
-	    map.put("j", "J");
-	    
-	    map.put("beq", "value1");
-	    map.put("bne", "value2");
 	}
 	public static boolean checkop (String [] split)
 	{
@@ -112,15 +79,39 @@ public class MipsParser {
 	}
 	public static boolean checkArg (String [] split)
 	{
-		for (int i = 1 ; i< split.length ;i++ )
+		if (map.get(split[0]).equals("R"))
 		{	
-			if (!(Character.toString(split[i].charAt(0))).equals("$"))
+			for (int i = 1 ; i< split.length ;i++ )		
+		    {
+				if (!(Character.toString(split[i].charAt(0))).equals("$"))
+				{	
+					return false;
+				}		
+	     	}
+	    }    
+	   else if (map.get(split[0]).equals("I"))
+	   {	  
+		   for (int i = 1 ; i< split.length-1 ;i++ )
+		   {	   
+				if (!(Character.toString(split[i].charAt(0))).equals("$"))
+				{	
+					return false;
+				}	
+		   }	   
+		   if (split[3].contains("$"))
+		   {	   
+			   return false;
+		   }
+	   }	  
+	   else
+	   {  	   
+			if (!(Character.toString(split[1].charAt(0))).equals("$"))
 			{	
 				return false;
-			}
-		}
-		return true ;
-	}
+			}	
+	   }
+	   return true;	 
+    }  
 	public static boolean checkReg (String [] split)
 	{
 		if (split[1].equals("$0"))
@@ -190,6 +181,29 @@ public class MipsParser {
 	    opcode.put("beq", 4);
 	    
 
+	}
+	public static void initialize()
+	{
+	    map.put("add", "R");
+	    map.put("or", "R");
+	    map.put("sub", "R");
+	    map.put("and", "R");
+	    map.put("sll", "R");
+	    map.put("slt", "R");
+
+	    map.put("addi","I");
+	    map.put("lw", "I");
+	    map.put("sw", "I");
+	    map.put("andi", "I");
+	    map.put("ori", "I");
+	    map.put("slti", "I");
+	    map.put("lui", "I");
+	    
+	    map.put("jr", "J");
+	    map.put("j", "J");
+	    
+	    map.put("beq", "value1");
+	    map.put("bne", "value2");
 	}
 	
 }
