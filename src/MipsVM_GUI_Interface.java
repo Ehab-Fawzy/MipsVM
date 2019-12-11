@@ -139,6 +139,17 @@ public class MipsVM_GUI_Interface {
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(pc) );
 		MipsVM_GUI.pcTxt.setText( String.valueOf(pc) );
 		MipsVM_GUI.typeTxt.setText( instructionSet.get(pc).type + " - Type" );
+		
+		if 		( instructionSet.get(pc).type == 'R' ) {
+			MipsVM_GUI.writeRtype();
+		}
+		else if ( instructionSet.get(pc).type == 'I' ) {
+			MipsVM_GUI.writeItype();
+		}
+		else if ( instructionSet.get(pc).type == 'J' ) {
+			MipsVM_GUI.writeJtype();
+		}
+		
 		processor.execute( instructionSet.get(pc) );
 		
 		if ( pc >= instructionList.size() ) {
