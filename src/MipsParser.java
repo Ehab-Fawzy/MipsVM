@@ -8,42 +8,50 @@ import java.lang.Math;
 
 public class MipsParser {
 	
-    public static Map<String, String> map = new HashMap<String, String>();
+    public static Map <String, String> map = new HashMap<String, String>();
+    
+    public static Map <String, Integer> func = new HashMap<String, Integer>();
+    public static Map <String, Integer> opcode = new HashMap<String, Integer>();
+
 
 	public MipsInstructions parse( String line ) {
 		
 		initialize() ;
-		String func = null ;
+		SetFuncAndOpcode() ;
+		
+		String function = null ;
         int indexOfSpace = line.indexOf(" ");
-        func = line.substring(0,indexOfSpace);
+        function = line.substring(0,indexOfSpace);
         line = line.substring(indexOfSpace+1);
-        line = func+','+line;
+        line = function+','+line;
         String [] split = line.split(",") ;
-        
-        MipsInstructions ret = null;
-        
+        MipsInstructions ret = null ;
+                
         if (checkop(split))
         {		
         	if (checkArg(split))
         	{	
         		if (checkReg(split))
         		{	
-        			
+        			if(map.get(split[0]).equals("R"))
+        			{	
+        		         ret = new MipsInstructions ('R' ,0 ,0, 0,func.get(split[0])) ;
+
+        				
+        			}
+        			else if (map.get(split[0]).equals("I"))
+        			{   
+        			    ret = new MipsInstructions (opcode.get(split[0]),'I',0,0,0) ;
+        			}
         		}
         		else
-        		{	
-        			return ret ;
-        		}
+        			return null ;
         	}
         	else
-        	{	
-        		return ret;
-        	}
+        		return null;
         }
         else
-        {	
-        	return ret ;
-        }
+        	return null ;
 	    
 		
 		
@@ -75,6 +83,7 @@ public class MipsParser {
 	    
 	    map.put("jr", "J");
 	    map.put("j", "J");
+	    
 	    map.put("beq", "value1");
 	    map.put("bne", "value2");
 	}
@@ -162,4 +171,25 @@ public class MipsParser {
 		}
 		return number ;
 	}
+	public static void SetFuncAndOpcode ()
+	{
+	    func.put("add", 32);
+	    func.put("or",  5);
+	    func.put("sub", 1);
+	    func.put("and", 4);
+	    func.put("sll", 0);
+	    func.put("slt", 42);
+
+	    opcode.put("addi", 8);
+	    opcode.put("lw", 35);
+	    opcode.put("sw", 43);
+	    opcode.put("andi", 12);
+	    opcode.put("ori", 13);
+	    opcode.put("slti", 10);
+	    opcode.put("lui", 15);
+	    opcode.put("beq", 4);
+	    
+
+	}
+	
 }
