@@ -8,8 +8,8 @@ public class MipsInstructions {
 		this.opcode = 0; 
 		this.shmant = 0;
 		this.type = 'R';
-		this.ra = _ra;
-		this.rb = _rb;
+		this.ra = _ra; //rs
+		this.rb = _rb; //rt
 		this.rd = _rd;
 		this.funct = _funct;
 	}
