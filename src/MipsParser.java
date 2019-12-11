@@ -137,9 +137,12 @@ public class MipsParser {
 				  return false ;
 			  }
 			}	
-			else
-			{	
-				return false ;
+			else 
+			{		
+				if (!split[i].equals("$0"))
+				{ 		 
+				  return false ; 
+				}
 			}
 		}	
 
