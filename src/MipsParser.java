@@ -34,13 +34,11 @@ public class MipsParser {
         		{	
         			if(map.get(split[0]).equals("R"))
         			{	
-        		         ret = new MipsInstructions ('R' ,0 ,0, 0,func.get(split[0])) ;
-
-        				
+        		         ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
         			}
         			else if (map.get(split[0]).equals("I"))
         			{   
-        			    ret = new MipsInstructions (opcode.get(split[0]),'I',0,0,0) ;
+        			    ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
         			}
         		}
              }		

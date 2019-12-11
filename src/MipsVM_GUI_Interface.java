@@ -13,46 +13,50 @@ public class MipsVM_GUI_Interface {
 	public static Vector<String> instructionList = null;
 	public static Vector<MipsInstructions> instructionSet = null;
 
-	
+	public static boolean first = true;
 	
 	public static void init() {
 		memSize = 1024;
 		
-		if ( REG == null ) {
-			REG = new Register();
-		}
+		if ( first ) {
+			first = false;
 		
-		if ( MEM == null ) {
-			MEM = new MipsMemory(memSize, "0x00001000");
-		}
-		
-		if ( parser == null ) {
-			parser = new MipsParser();	
-		}
-		
-		if ( processor == null ) {
-			processor = new CPU();	
+			if ( REG == null ) {
+				REG = new Register();
+			}
+			
+			if ( MEM == null ) {
+				MEM = new MipsMemory(memSize, "0x00001000");
+			}
+			
+			if ( parser == null ) {
+				parser = new MipsParser();	
+			}
+			
+			if ( processor == null ) {
+				processor = new CPU();	
+			}
+				
+			if ( instructionList == null ) {
+				instructionList = new Vector<String>();
+			}
+			
+			if ( labelToIdx == null ) {
+				labelToIdx = new HashMap<Integer, Integer>();
+			}
+			
+			if ( compressLabel == null ) {
+				compressLabel = new HashMap<String, Integer>();
+			}
+			
+			if ( instructionSet == null ) {
+				instructionSet = new Vector<MipsInstructions>();
+			}
 		}
 		
 		updateMemory();
 		updateRegisterFile();
 		
-		if ( instructionList == null ) {
-			instructionList = new Vector<String>();
-		}
-		
-		if ( labelToIdx == null ) {
-			labelToIdx = new HashMap<Integer, Integer>();
-		}
-		
-		if ( compressLabel == null ) {
-			compressLabel = new HashMap<String, Integer>();
-		}
-		
-		if ( instructionSet == null ) {
-			instructionSet = new Vector<MipsInstructions>();
-		}
-
 		cutInstructions(); pc = 0; labelCnt = 0;
 	}
 	
@@ -111,6 +115,8 @@ public class MipsVM_GUI_Interface {
 	
 	public static boolean parseAll() {
 		cutInstructions();
+		/*MipsInstructions obj = new MipsInstructions(8, 'I', 0, 16, 5);
+		instructionSet.add(obj);*/
 		for ( int i = 0; i < instructionList.size(); ++i ) {
 			MipsInstructions object = parser.parse( instructionList.get(i) );
 			if ( object == null ) {
@@ -124,9 +130,12 @@ public class MipsVM_GUI_Interface {
 		return true;
 	}
 	
-	public static void runNext() {		
+	public static void runNext() {	
+		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(pc) );
+		MipsVM_GUI.pcTxt.setText( String.valueOf(pc) );
+		MipsVM_GUI.typeTxt.setText( instructionSet.get(pc).type + " - Type" );
 		processor.execute( instructionSet.get(pc) );
-
+		
 		if ( pc >= instructionList.size() ) {
 			MipsVM_GUI.compile.setEnabled(true);
 			MipsVM_GUI.nextStep.setEnabled(false);

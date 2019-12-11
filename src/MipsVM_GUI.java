@@ -49,11 +49,11 @@ public class MipsVM_GUI {
 	private JScrollPane DataSegment;
 	public static JTextArea textSegmentValues , DataSegmentValues;
 	public static JTextArea codeArea;
-	private JTextField txtAdds;
-	private JTextField txtRType;
+	public static JTextField txtAdds;
+	public static JTextField typeTxt;
 	private JSeparator separator_1;
 	public static JButton runAll , nextStep , compile;
-	private JTextField textField;
+	public static JTextField pcTxt;
 	private JTable table;
 	private TextLineNumber tln , textSegmentTLN , dataSegmentTLN;
 	private JScrollPane TextEditor;
@@ -130,12 +130,12 @@ public class MipsVM_GUI {
 		lblNewJgoodiesLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewJgoodiesLabel.setFont(new Font("Vrinda", Font.BOLD, 14));
 		
-		txtRType = new JTextField();
-		txtRType.setHorizontalAlignment(SwingConstants.CENTER);
-		txtRType.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
-		txtRType.setEditable(false);
-		txtRType.setColumns(10);
-		txtRType.setBackground(SystemColor.menu);
+		typeTxt = new JTextField();
+		typeTxt.setHorizontalAlignment(SwingConstants.CENTER);
+		typeTxt.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
+		typeTxt.setEditable(false);
+		typeTxt.setColumns(10);
+		typeTxt.setBackground(SystemColor.menu);
 		
 		separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
@@ -161,12 +161,12 @@ public class MipsVM_GUI {
 		lblProgramCounter.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProgramCounter.setFont(new Font("Vrinda", Font.BOLD, 16));
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Vrinda", Font.BOLD, 18));
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setEditable(false);
-		textField.setBackground(SystemColor.menu);
-		textField.setColumns(10);
+		pcTxt = new JTextField();
+		pcTxt.setFont(new Font("Vrinda", Font.BOLD, 18));
+		pcTxt.setHorizontalAlignment(SwingConstants.CENTER);
+		pcTxt.setEditable(false);
+		pcTxt.setBackground(SystemColor.menu);
+		pcTxt.setColumns(10);
 		
 		table = new JTable();
 		table.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -223,11 +223,11 @@ public class MipsVM_GUI {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblNewJgoodiesLabel, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-										.addComponent(txtRType, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+										.addComponent(typeTxt, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblProgramCounter, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-										.addComponent(textField, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+										.addComponent(pcTxt, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
 									.addGap(8))
 								.addComponent(lblInstruct, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
 								.addGroup(groupLayout.createSequentialGroup()
@@ -278,8 +278,8 @@ public class MipsVM_GUI {
 										.addComponent(lblProgramCounter))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(txtRType, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-										.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addComponent(typeTxt, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+										.addComponent(pcTxt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 									.addGap(12)))
 							.addGap(11))
 						.addGroup(groupLayout.createSequentialGroup()
