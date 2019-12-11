@@ -66,7 +66,7 @@ public class CPU {
 				int offset = MipsVM_GUI_Interface.REG.getData(instruction.ra);
 				offset += instruction.imm;
 				String hexOffset = Integer.toHexString(offset);
-				int memoryValue = 0;
+				int memoryValue = MipsVM_GUI_Interface.MEM.getOffset(hexOffset);
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, memoryValue);
 			}
 			
