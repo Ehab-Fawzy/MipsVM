@@ -26,6 +26,14 @@ public class CPU {
 				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) + instruction.imm;
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
+			else if (instruction.opcode == 12) {//andi
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) & instruction.imm;
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
+			}
+			else if (instruction.opcode == 13) {//ori
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) | instruction.imm;
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
+			}
 			
 			
 			
