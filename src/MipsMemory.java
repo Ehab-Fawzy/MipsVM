@@ -11,4 +11,8 @@ public class MipsMemory {
 	public int[] getMemory() {
 		return memory;
 	}
+	public int convertHexToBinary(int index) {
+		
+		return 0;
+	}
 }
