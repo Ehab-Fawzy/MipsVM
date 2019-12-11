@@ -1,18 +1,31 @@
 
 public class MipsMemory {
-	int size = 1024;
+	//int size ;
+	String base ;
 	public int memory [];
-	public MipsMemory() {
-		memory = new int[size];
+	public static void main(String[] args) {
+		MipsMemory memory = new MipsMemory(1024, "0x00001000");
+		System.out.println(memory.getOffset("0x00001004"));
+		System.out.println(memory.getOffset("0x00001008"));
+		System.out.println(memory.getOffset("0x0000100C"));
+		System.out.println(memory.getOffset("0x00001010"));
 	}
-	public void write (int index, int value) {
-		memory[index] = value;
+	public MipsMemory(int size, String base) {
+		memory = new int[size];
+		this.base = new String(base);
+	}
+	public void write (String index, int value) {
+		int offset = getOffset(index);
+		memory[offset] = value;
 	}
 	public int[] getMemory() {
 		return memory;
 	}
-	public int convertHexToBinary(int index) {
-		
-		return 0;
+	public int getOffset(String index) {
+		String indexNumber = index.substring(2);
+		String baseNumber = this.base.substring(2);
+		int start = Integer.parseInt(baseNumber,16);
+		int decimal = Integer.parseInt(indexNumber,16) ;
+		return (decimal-start)/4;
 	}
 }
