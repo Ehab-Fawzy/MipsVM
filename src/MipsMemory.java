@@ -26,6 +26,6 @@ public class MipsMemory {
 		String baseNumber = this.base.substring(2);
 		int start = Integer.parseInt(baseNumber,16);
 		int decimal = Integer.parseInt(indexNumber,16) ;
-		return (decimal-start)/4;
+		return (decimal-start)/4 - 1;
 	}
 }
