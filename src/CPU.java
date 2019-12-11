@@ -63,8 +63,11 @@ public class CPU {
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 			else if (instruction.opcode == 35) {//lw
-				int answer = instruction.imm << 16; //rt=imm<<16
-				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
+				int offset = MipsVM_GUI_Interface.REG.getData(instruction.ra);
+				offset += instruction.imm;
+				String hexOffset = Integer.toHexString(offset);
+				int memoryValue = 0;
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, memoryValue);
 			}
 			
 		}
