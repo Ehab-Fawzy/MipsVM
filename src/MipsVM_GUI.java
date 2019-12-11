@@ -90,16 +90,15 @@ public class MipsVM_GUI {
 	}
 	
 	public void runFinal() {
-		/*TextEditor.setRowHeaderView(tln);
+		TextEditor.setRowHeaderView(tln);
 		TextSegment.setRowHeaderView(textSegmentTLN);
 		DataSegment.setRowHeaderView( dataSegmentTLN );
-		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);*/
+		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		nextStep.setEnabled(false);
 		runAll.setEnabled(false);
 		
 		MipsVM_GUI_Interface.init();
-		MipsVM_GUI_Interface.updateRegisterFile();
 	}
 
 	
@@ -196,13 +195,16 @@ public class MipsVM_GUI {
 		compile = new JButton("Compile");
 		compile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				nextStep.setEnabled(true);
-				runAll.setEnabled(true);
-				compile.setEnabled(false);
 				MipsVM_GUI_Interface.init();
 				
-				
 				textSegmentValues.setText( codeArea.getText() );
+				boolean validParse = MipsVM_GUI_Interface.parseAll();
+				
+				if ( validParse ) {
+					nextStep.setEnabled(true);
+					runAll.setEnabled(true);
+					compile.setEnabled(false);
+				}
 			}
 		});
 		compile.setFont(new Font("Vrinda", Font.BOLD, 14));

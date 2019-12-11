@@ -42,4 +42,7 @@ public class MipsMemory {
 		int offset = getOffset(hex);
 		return memory[offset];
 	}
+	public int getValue (Integer index) {
+		return memory[index];
+	}
 }

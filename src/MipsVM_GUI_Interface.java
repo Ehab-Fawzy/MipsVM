@@ -2,49 +2,57 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class MipsVM_GUI_Interface {
-	public static Register REG;
-	public static MipsMemory MEM;
-	public static CPU processor;
-	public static MipsParser parser;
+	public static Register REG = null;
+	public static MipsMemory MEM = null;
+	public static CPU processor = null;
+	public static MipsParser parser = null;
 	
 	public static Integer pc , labelCnt , memSize;
-	public static HashMap<String, Integer> compressLabel; 
-	public static HashMap<Integer, Integer> labelToIdx;
+	public static HashMap<String, Integer> compressLabel = null; 
+	public static HashMap<Integer, Integer> labelToIdx = null;
 	public static Vector<String> instructionList = null;
-	
-	/*public MipsVM_GUI_Interface() {
-		REG = new Register();
-		MEM = new MipsMemory(1024, "0x00001000");
+	public static Vector<MipsInstructions> instructionSet = null;
 
-		labelToIdx = new HashMap<Integer, Integer>();
-		compressLabel = new HashMap<String, Integer>();
-		cutInstructions(); pc = 0; labelCnt = 0;
-	}*/
 	
-	/*public static void main( String args0[] ) {
-		REG = new Register();
-		MEM = new MipsMemory(1024, "0x00001000");
-		
-		pc = 0;
-		REG.setData(0, 1); REG.setData(1, 5);
-		processor = new CPU();
-		MipsInstructions i = new MipsInstructions('R', 2, 0, 1, 2);
-		processor.execute(i);
-		System.out.println( REG.getData(2) );
-		System.out.println( pc );
-	}*/
 	
 	public static void init() {
 		memSize = 1024;
 		
-		REG 		= new Register();
-		MEM 		= new MipsMemory(memSize, "0x00001000");
-		parser 		= new MipsParser();
-		processor 	= new CPU();
+		if ( REG == null ) {
+			REG = new Register();
+		}
 		
-		instructionList = new Vector<String>();
-		labelToIdx = new HashMap<Integer, Integer>();
-		compressLabel = new HashMap<String, Integer>();
+		if ( MEM == null ) {
+			MEM = new MipsMemory(memSize, "0x00001000");
+		}
+		
+		if ( parser == null ) {
+			parser = new MipsParser();	
+		}
+		
+		if ( processor == null ) {
+			processor = new CPU();	
+		}
+		
+		updateMemory();
+		updateRegisterFile();
+		
+		if ( instructionList == null ) {
+			instructionList = new Vector<String>();
+		}
+		
+		if ( labelToIdx == null ) {
+			labelToIdx = new HashMap<Integer, Integer>();
+		}
+		
+		if ( compressLabel == null ) {
+			compressLabel = new HashMap<String, Integer>();
+		}
+		
+		if ( instructionSet == null ) {
+			instructionSet = new Vector<MipsInstructions>();
+		}
+
 		cutInstructions(); pc = 0; labelCnt = 0;
 	}
 	
@@ -97,13 +105,28 @@ public class MipsVM_GUI_Interface {
 	public static void updateMemory() {
 		MipsVM_GUI.DataSegmentValues.setText("");
 		for ( int itr = 0; itr < memSize; ++itr ) {
-			//MipsVM_GUI.DataSegmentValues.append( MEM.get );
+			MipsVM_GUI.DataSegmentValues.append( "" + MEM.getValue(itr) + "\n" );
 		}
 	}
 	
-	public static void runNext() {
-		System.out.println( instructionList.elementAt(pc) ); pc++;
-		
+	public static boolean parseAll() {
+		cutInstructions();
+		for ( int i = 0; i < instructionList.size(); ++i ) {
+			MipsInstructions object = parser.parse( instructionList.get(i) );
+			if ( object == null ) {
+				reportError( "ERROR in line " + (i+1) );
+				return false;
+			}
+			else {
+				instructionSet.add(object);
+			}
+		}
+		return true;
+	}
+	
+	public static void runNext() {		
+		processor.execute( instructionSet.get(pc) );
+
 		if ( pc >= instructionList.size() ) {
 			MipsVM_GUI.compile.setEnabled(true);
 			MipsVM_GUI.nextStep.setEnabled(false);
