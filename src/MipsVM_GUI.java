@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Insets;
 import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
+
 import javax.swing.JTextField;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
@@ -23,8 +24,12 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.border.LineBorder;
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.ComponentOrientation;
 
 public class MipsVM_GUI {
 
@@ -49,7 +54,13 @@ public class MipsVM_GUI {
 	private JButton btnRun;
 	private JTextField textField;
 	private JTable table;
-
+	private JScrollPane textEditor;
+	private JTextArea codeArea;
+	private JTextArea codeCounter;
+	
+	private static Integer codeCurrentCounter;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -71,6 +82,41 @@ public class MipsVM_GUI {
 	 */
 	public MipsVM_GUI() {
 		initialize();
+	}
+	
+	public void codeCounterChange() throws BadLocationException {
+		Integer maximumLine = codeArea.getLineCount();
+		Integer maxBase = (int)Math.ceil( Math.log10(maximumLine) );
+		
+		if ( maximumLine < 10 ) {
+			maxBase = 1;
+		}
+		
+		codeCounter.setColumns(maxBase+1);
+		while ( codeCurrentCounter < maximumLine ) {
+			String word = " " + codeCurrentCounter;
+			while ( word.length() < maxBase ) {
+				word = " " + word;
+			}
+			codeCounter.append(word + "\n");
+			codeCurrentCounter++;
+		}
+
+		while ( codeCurrentCounter > maximumLine ) {
+			/*int end = codeCounter.getLineStartOffset(codeCounter);
+			codeCounter.replaceRange("", 0 , end);
+			codeCurrentCounter--;*/
+		}
+		
+		/*
+		codeCounter.setText("");
+		for ( int i = 1; i <= maximumLine; ++i ) {
+			String word = "" + i;
+			while ( word.length() < maxBase ) {
+				word = " " + word;
+			}
+			codeCounter.append(word + "\n");
+		}*/
 	}
 	
 	public void staticInit() {
@@ -97,6 +143,8 @@ public class MipsVM_GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		codeCurrentCounter = 0;
+		
 		frmMipsvm = new JFrame();
 		frmMipsvm.setTitle("MipsVM");
 		frmMipsvm.setBounds(100, 100, 635, 490);
@@ -114,7 +162,6 @@ public class MipsVM_GUI {
 		txtAdds.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
 		txtAdds.setHorizontalAlignment(SwingConstants.CENTER);
 		txtAdds.setEditable(false);
-		txtAdds.setText("add  $s0  ,  $s1  ,  $s2");
 		txtAdds.setBackground(SystemColor.menu);
 		txtAdds.setColumns(10);
 		
@@ -123,7 +170,6 @@ public class MipsVM_GUI {
 		lblNewJgoodiesLabel.setFont(new Font("Vrinda", Font.BOLD, 14));
 		
 		txtRType = new JTextField();
-		txtRType.setText("R - Type");
 		txtRType.setHorizontalAlignment(SwingConstants.CENTER);
 		txtRType.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
 		txtRType.setEditable(false);
@@ -135,7 +181,6 @@ public class MipsVM_GUI {
 		
 		note = new JTextArea();
 		note.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		note.setLineWrap(true);
 		note.setBorder(new LineBorder(new Color(0, 0, 0)));
 		note.setEditable(false);
 		note.setBackground(SystemColor.menu);
@@ -156,7 +201,6 @@ public class MipsVM_GUI {
 		
 		textField = new JTextField();
 		textField.setFont(new Font("Vrinda", Font.BOLD, 18));
-		textField.setText("35");
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setEditable(false);
 		textField.setBackground(SystemColor.menu);
@@ -169,7 +213,7 @@ public class MipsVM_GUI {
 		table.setBackground(SystemColor.menu);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setRowHeight(35);
-		table.setModel(new DefaultTableModel(
+		/*table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"opcode", "ra", "rb", "rd", "shmant", "funct"},
 				{"000000", "10001", "10010", "10000", "00000", "10000"},
@@ -184,17 +228,7 @@ public class MipsVM_GUI {
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
-		});
-		
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-		
-        for ( int i = 0; i < 6; ++i ) {
-        	table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
-        }
-        
-        String s = "add value in register $s1 with value in register $s2 and put the result in register $s0";
-		note.setText(s);
+		});*/
 		
 		
 		//panel.setVisible(false);
@@ -286,9 +320,11 @@ public class MipsVM_GUI {
 		rightPage.addTab("Text Segment", null, TextSegment, null);
 		
 		textSegmentValues = new JTextArea();
+		textSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		TextSegment.setViewportView(textSegmentValues);
 		
 		TextSegmentNames = new JTextArea();
+		TextSegmentNames.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		TextSegmentNames.setEnabled(false);
 		TextSegmentNames.setEditable(false);
 		TextSegmentNames.setColumns(5);
@@ -300,15 +336,66 @@ public class MipsVM_GUI {
 		rightPage.addTab("Data Segment", null, DataSegment, null);
 		
 		DataSegmentValues = new JTextArea();
+		DataSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		DataSegment.setViewportView(DataSegmentValues);
 		
 		DataSegmentNames = new JTextArea();
+		DataSegmentNames.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		DataSegmentNames.setEnabled(false);
 		DataSegmentNames.setEditable(false);
 		DataSegmentNames.setColumns(5);
 		DataSegmentNames.setBackground(new Color(240, 248, 255));
 		DataSegmentNames.setDisabledTextColor(new Color(0, 0, 139));
 		DataSegment.setRowHeaderView(DataSegmentNames);
+		
+		textEditor = new JScrollPane();
+		rightPage.addTab("Text Editor", null, textEditor, null);
+		
+		codeArea = new JTextArea();
+		codeArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				try {
+					codeCounterChange();
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				try {
+					codeCounterChange();
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {
+				try {
+					codeCounterChange();
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		codeArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		codeArea.setForeground(new Color(0, 0, 255));
+		codeArea.setDisabledTextColor(new Color(0, 0, 255));
+		codeArea.setMargin(new Insets(2, 5, 2, 2));
+		textEditor.setViewportView(codeArea);
+		
+		codeCounter = new JTextArea();
+		codeCounter.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		codeCounter.setColumns(1);
+		codeCounter.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		codeCounter.setDisabledTextColor(new Color(0, 0, 139));
+		codeCounter.setEnabled(false);
+		codeCounter.setEditable(false);
+		codeCounter.setBackground(new Color(240, 248, 255));
+		textEditor.setRowHeaderView(codeCounter);
 		
 		leftPage = new JTabbedPane(JTabbedPane.TOP);
 		leftPage.setVerifyInputWhenFocusTarget(false);
