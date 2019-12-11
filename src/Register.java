@@ -4,7 +4,9 @@ public class Register {
 	public Integer [] reg ;
 	public Register() {
 		reg = new Integer [32];
-		reg[0] = 0; /// $0 
+		for ( int idx = 0; idx < 32; ++idx ) {
+			reg[idx] = 0;
+		}
 	}
 	public int getData(int index) {
 		return reg[index];
