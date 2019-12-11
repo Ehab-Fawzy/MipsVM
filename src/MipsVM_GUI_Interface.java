@@ -13,47 +13,43 @@ public class MipsVM_GUI_Interface {
 	public static Vector<String> instructionList = null;
 	public static Vector<MipsInstructions> instructionSet = null;
 
-	public static boolean first = true;
 	
 	public static void init() {
 		memSize = 1024;
 		
-		if ( first ) {
-			first = false;
-		
-			if ( REG == null ) {
-				REG = new Register();
-			}
-			
-			if ( MEM == null ) {
-				MEM = new MipsMemory(memSize, "0x00001000");
-			}
-			
-			if ( parser == null ) {
-				parser = new MipsParser();	
-			}
-			
-			if ( processor == null ) {
-				processor = new CPU();	
-			}
-				
-			if ( instructionList == null ) {
-				instructionList = new Vector<String>();
-			}
-			
-			if ( labelToIdx == null ) {
-				labelToIdx = new HashMap<Integer, Integer>();
-			}
-			
-			if ( compressLabel == null ) {
-				compressLabel = new HashMap<String, Integer>();
-			}
-			
-			if ( instructionSet == null ) {
-				instructionSet = new Vector<MipsInstructions>();
-			}
+		if ( REG == null ) {
+			REG = new Register();
 		}
 		
+		if ( MEM == null ) {
+			MEM = new MipsMemory(memSize, "0x00001000");
+		}
+		
+		if ( parser == null ) {
+			parser = new MipsParser();	
+		}
+		
+		if ( processor == null ) {
+			processor = new CPU();	
+		}
+	
+			
+		if ( instructionList == null ) {
+			instructionList = new Vector<String>();
+		}
+		
+		if ( labelToIdx == null ) {
+			labelToIdx = new HashMap<Integer, Integer>();
+		}
+		
+		if ( compressLabel == null ) {
+			compressLabel = new HashMap<String, Integer>();
+		}
+		
+		if ( instructionSet == null ) {
+			instructionSet = new Vector<MipsInstructions>();
+		}
+	
 		updateMemory();
 		updateRegisterFile();
 		
