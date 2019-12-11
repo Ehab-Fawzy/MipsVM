@@ -62,8 +62,10 @@ public class CPU {
 				int answer = instruction.imm << 16; //rt=imm<<16
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
-			
-			
+			else if (instruction.opcode == 35) {//lw
+				int answer = instruction.imm << 16; //rt=imm<<16
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
+			}
 			
 		}
 		else if(instruction.type == 'J') {
@@ -74,18 +76,38 @@ public class CPU {
 			
 		}
 		
-		
-		return "";
+		String machineLanguage = toBinary(instruction);
+		return machineLanguage;
 	}
 	
 	
 	public String toBinary( MipsInstructions instruction ) {
-		String output;
-		/*
-		if (instruction.type == "I") {
-			output
+		String output ="";
+		if (instruction.type == 'R') {
+			output += convertToBinary(0, 6);//opcode is zero
+			output += convertToBinary(instruction.ra, 5);
+			output += convertToBinary(instruction.rb, 5);
+			output += convertToBinary(instruction.rd, 5);
+			output += convertToBinary(instruction.shmant, 5);
+			output += convertToBinary(instruction.funct, 5);
 		}
-		*/
-		return "";
+		else if (instruction.type == 'I') {
+			output += convertToBinary(instruction.opcode, 6);
+			output += convertToBinary(instruction.ra, 5);
+			output += convertToBinary(instruction.rb, 5);
+			output += convertToBinary(instruction.imm, 16);
+		}
+		else if (instruction.type == 'J') {
+			output += convertToBinary(instruction.opcode, 6);
+			output += convertToBinary(instruction.dist, 26);
+		}
+		return output;
 	}
+	
+	public String convertToBinary(int i, int length) {
+        String bin = Integer.toBinaryString(i);
+        while (bin.length()< length) 
+            bin = "0" + bin;
+        return bin;
+    }
 }
