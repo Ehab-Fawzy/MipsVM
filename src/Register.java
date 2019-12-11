@@ -14,4 +14,5 @@ public class Register {
 	public void setData(int index, int element) {
 		reg[index] = element;
 	}
+	
 }

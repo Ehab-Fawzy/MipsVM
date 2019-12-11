@@ -1,8 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.Instruction;
-import com.sun.org.apache.bcel.internal.generic.Visitor;
-
-import sun.management.snmp.util.MibLogger;
-
 public class CPU {
 	public static void main(String[] args) {
 		CPU cpu = new CPU();
