@@ -3,25 +3,28 @@ public class CPU {
 	
 	public String execute( MipsInstructions instruction ) {
 		if (instruction.type == 'R') {
-			if (instruction.funct == 0){//add
-				int answer = REG.get(instruction.ra) + REG.get(instruction.rb);
-				REG.set(instruction.rd, answer);
-				
-				
+			if (instruction.funct == 32){//add
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) + MipsVM_GUI_Interface.REG.getData(instruction.rb);
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 			else if (instruction.funct == 1) {//sub
-				int answer = REG.get(instruction.ra) - REG.get(instruction.rb);
-				REG.set(instruction.rd, answer);
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) - MipsVM_GUI_Interface.REG.getData(instruction.rb);
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
-			else if (instruction.funct == 2) {
-				
+			else if (instruction.funct == 4) {//and
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) & MipsVM_GUI_Interface.REG.getData(instruction.rb);
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
+			}
+			else if (instruction.funct == 5) {//or
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) | MipsVM_GUI_Interface.REG.getData(instruction.rb);
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 		
 		}
 		else if(instruction.type == 'I') {
-			if (instruction.opcode == 0) {//addi
-				int answer = REG.get(instruction.ra) + instruction.imm;
-				REG.set(instruction.rd, answer);
+			if (instruction.opcode == 8) {//addi
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) + instruction.imm;
+				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 			
 			
@@ -42,10 +45,11 @@ public class CPU {
 	
 	public String toBinary( MipsInstructions instruction ) {
 		String output;
+		/*
 		if (instruction.type == "I") {
 			output
 		}
-		
+		*/
 		return "";
 	}
 }
