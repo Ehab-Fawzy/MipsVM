@@ -1,6 +1,5 @@
 
 public class MipsMemory {
-	//int size ;
 	String base ;
 	public int memory [];
 	public static void main(String[] args) {
@@ -25,7 +24,7 @@ public class MipsMemory {
 		String indexNumber = index.substring(2);
 		String baseNumber = this.base.substring(2);
 		int start = Integer.parseInt(baseNumber,16);
-		int decimal = Integer.parseInt(indexNumber,16) ;
+		int decimal = Integer.parseInt(indexNumber,16);
 		return (decimal-start)/4 - 1;
 	}
 }
