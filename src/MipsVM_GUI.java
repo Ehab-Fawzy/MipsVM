@@ -93,22 +93,6 @@ public class MipsVM_GUI {
 		}
 		
 		codeCounter.setColumns(maxBase+1);
-		while ( codeCurrentCounter < maximumLine ) {
-			String word = " " + codeCurrentCounter;
-			while ( word.length() < maxBase ) {
-				word = " " + word;
-			}
-			codeCounter.append(word + "\n");
-			codeCurrentCounter++;
-		}
-
-		while ( codeCurrentCounter > maximumLine ) {
-			/*int end = codeCounter.getLineStartOffset(codeCounter);
-			codeCounter.replaceRange("", 0 , end);
-			codeCurrentCounter--;*/
-		}
-		
-		/*
 		codeCounter.setText("");
 		for ( int i = 1; i <= maximumLine; ++i ) {
 			String word = "" + i;
@@ -116,7 +100,7 @@ public class MipsVM_GUI {
 				word = " " + word;
 			}
 			codeCounter.append(word + "\n");
-		}*/
+		}
 	}
 	
 	public void staticInit() {

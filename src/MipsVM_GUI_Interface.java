@@ -5,6 +5,6 @@ public class MipsVM_GUI_Interface {
 	
 	public MipsVM_GUI_Interface() {
 		REG = new Register();
-	
+		MEM = new MipsMemory(1024, "0x00001000");
 	}
 }
