@@ -1,6 +1,8 @@
 import com.sun.org.apache.bcel.internal.generic.Instruction;
 import com.sun.org.apache.bcel.internal.generic.Visitor;
 
+import sun.management.snmp.util.MibLogger;
+
 public class CPU {
 	public static void main(String[] args) {
 		CPU cpu = new CPU();
@@ -36,6 +38,10 @@ public class CPU {
 				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) | MipsVM_GUI_Interface.REG.getData(instruction.rb);
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
+			else if (instruction.funct == 8) {//JumpR
+				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.REG.getData(instruction.ra);
+				return toBinary(instruction);
+			}
 			else if (instruction.funct == 32){//add
 				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) + MipsVM_GUI_Interface.REG.getData(instruction.rb);
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
@@ -53,7 +59,19 @@ public class CPU {
 		
 		}
 		else if(instruction.type == 'I') {
-			if (instruction.opcode == 8) {//addi
+			if (instruction.opcode == 4) {//beq
+				if (MipsVM_GUI_Interface.REG.getData(instruction.ra) == MipsVM_GUI_Interface.REG.getData(instruction.rd)) {
+					MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm);
+					return toBinary(instruction);
+				}
+			}
+			else if (instruction.opcode == 5) {//bne
+				if (MipsVM_GUI_Interface.REG.getData(instruction.ra) != MipsVM_GUI_Interface.REG.getData(instruction.rd)) {
+					MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm);
+					return toBinary(instruction);
+				}
+			}
+			else if (instruction.opcode == 8) {//addi
 				int answer = MipsVM_GUI_Interface.REG.getData(instruction.ra) + instruction.imm;
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
@@ -98,14 +116,17 @@ public class CPU {
 			
 		}
 		else if(instruction.type == 'J') {
-			
-			
+			if (instruction.opcode == 2) {//Jump
+				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm);
+				return toBinary(instruction);
+			}
 		}
 		else {
-			
+			System.out.println("ERROR!");
 		}
 		
 		String machineLanguage = toBinary(instruction);
+		MipsVM_GUI_Interface.pc += 1;
 		return machineLanguage;
 	}
 	
