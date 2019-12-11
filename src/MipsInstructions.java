@@ -14,12 +14,12 @@ public class MipsInstructions {
 		this.funct = _funct;
 	}
 	
-	public MipsInstructions( int _opcode , char _type , int _ra , int _rb , int _imm ) {
+	public MipsInstructions( int _opcode , char _type , int _ra , int _rd , int _imm ) {
 		/// constructor for I type
 		this.opcode = _opcode; 
 		this.type = 'I';
 		this.ra = _ra;
-		this.rb = _rb;
+		this.rd = _rd;
 		this.imm= _imm;
 	}
 
