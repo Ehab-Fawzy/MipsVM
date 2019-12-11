@@ -42,9 +42,8 @@ public class MipsVM_GUI {
 	private JScrollPane TextSegment;
 	private JScrollPane DataSegment;
 	private JTextArea textSegmentValues;
-	private JTextArea TextSegmentNames;
 	private JTextArea DataSegmentValues;
-	private JTextArea DataSegmentNames;
+	private JTextArea codeArea;
 	private JTextField txtAdds;
 	private JTextField txtRType;
 	private JSeparator separator_1;
@@ -54,11 +53,9 @@ public class MipsVM_GUI {
 	private JButton btnRun;
 	private JTextField textField;
 	private JTable table;
-	private JScrollPane textEditor;
-	private JTextArea codeArea;
-	private JTextArea codeCounter;
+	private TextLineNumber tln , textSegmentTLN , dataSegmentTLN;
+	private JScrollPane TextEditor;
 	
-	private static Integer codeCurrentCounter;
 	
 	
 	/**
@@ -84,24 +81,12 @@ public class MipsVM_GUI {
 		initialize();
 	}
 	
-	public void codeCounterChange() throws BadLocationException {
-		Integer maximumLine = codeArea.getLineCount();
-		Integer maxBase = (int)Math.ceil( Math.log10(maximumLine) );
-		
-		if ( maximumLine < 10 ) {
-			maxBase = 1;
-		}
-		
-		codeCounter.setColumns(maxBase+1);
-		codeCounter.setText("");
-		for ( int i = 1; i <= maximumLine; ++i ) {
-			String word = "" + i;
-			while ( word.length() < maxBase ) {
-				word = " " + word;
-			}
-			codeCounter.append(word + "\n");
-		}
+	public void runFinal() {
+		TextEditor.setRowHeaderView(tln);
+		TextSegment.setRowHeaderView(textSegmentTLN);
+		DataSegment.setRowHeaderView( dataSegmentTLN );
 	}
+
 	
 	public void staticInit() {
 		String registerName = "";
@@ -127,8 +112,6 @@ public class MipsVM_GUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		codeCurrentCounter = 0;
-		
 		frmMipsvm = new JFrame();
 		frmMipsvm.setTitle("MipsVM");
 		frmMipsvm.setBounds(100, 100, 635, 490);
@@ -303,83 +286,42 @@ public class MipsVM_GUI {
 		TextSegment = new JScrollPane();
 		rightPage.addTab("Text Segment", null, TextSegment, null);
 		
-		textSegmentValues = new JTextArea();
+		textSegmentValues = new JTextArea();		
+		textSegmentValues.setEditable(false);
+		textSegmentValues.setForeground(new Color(0, 0, 255));
+		textSegmentValues.setDisabledTextColor(new Color(0, 0, 255));
+		textSegmentValues.setMargin(new Insets(2, 5, 2, 2));
 		textSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		textSegmentValues.setDisabledTextColor(new Color(0, 0, 139));
+		textSegmentTLN = new TextLineNumber(textSegmentValues);
 		TextSegment.setViewportView(textSegmentValues);
-		
-		TextSegmentNames = new JTextArea();
-		TextSegmentNames.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		TextSegmentNames.setEnabled(false);
-		TextSegmentNames.setEditable(false);
-		TextSegmentNames.setColumns(5);
-		TextSegmentNames.setBackground(new Color(240, 248, 255));
-		TextSegmentNames.setDisabledTextColor(new Color(0, 0, 139));
-		TextSegment.setRowHeaderView(TextSegmentNames);
 		
 		DataSegment = new JScrollPane();
 		rightPage.addTab("Data Segment", null, DataSegment, null);
 		
 		DataSegmentValues = new JTextArea();
+		DataSegmentValues.setForeground(new Color(0, 0, 255));
+		DataSegmentValues.setDisabledTextColor(new Color(0, 0, 255));
+		DataSegmentValues.setMargin(new Insets(2, 5, 2, 2));
 		DataSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		DataSegmentValues.setDisabledTextColor(new Color(0, 0, 139));
+		dataSegmentTLN = new TextLineNumber(DataSegmentValues , true);
 		DataSegment.setViewportView(DataSegmentValues);
 		
-		DataSegmentNames = new JTextArea();
-		DataSegmentNames.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		DataSegmentNames.setEnabled(false);
-		DataSegmentNames.setEditable(false);
-		DataSegmentNames.setColumns(5);
-		DataSegmentNames.setBackground(new Color(240, 248, 255));
-		DataSegmentNames.setDisabledTextColor(new Color(0, 0, 139));
-		DataSegment.setRowHeaderView(DataSegmentNames);
-		
-		textEditor = new JScrollPane();
-		rightPage.addTab("Text Editor", null, textEditor, null);
+		TextEditor = new JScrollPane();
+		rightPage.addTab("TextEditor", null, TextEditor, null);
 		
 		codeArea = new JTextArea();
-		codeArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				try {
-					codeCounterChange();
-				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			@Override
-			public void keyReleased(KeyEvent e) {
-				try {
-					codeCounterChange();
-				} catch (BadLocationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			@Override
-			public void keyTyped(KeyEvent e) {
-				try {
-					codeCounterChange();
-				} catch (BadLocationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		codeArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		codeArea.setForeground(new Color(0, 0, 255));
 		codeArea.setDisabledTextColor(new Color(0, 0, 255));
 		codeArea.setMargin(new Insets(2, 5, 2, 2));
-		textEditor.setViewportView(codeArea);
+		codeArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		codeArea.setDisabledTextColor(new Color(0, 0, 139));
 		
-		codeCounter = new JTextArea();
-		codeCounter.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		codeCounter.setColumns(1);
-		codeCounter.setFont(new Font("Monospaced", Font.PLAIN, 16));
-		codeCounter.setDisabledTextColor(new Color(0, 0, 139));
-		codeCounter.setEnabled(false);
-		codeCounter.setEditable(false);
-		codeCounter.setBackground(new Color(240, 248, 255));
-		textEditor.setRowHeaderView(codeCounter);
+		tln = new TextLineNumber(codeArea);
+		//TextEditor.setRowHeaderView(tln);
+		
+		TextEditor.setViewportView(codeArea);
 		
 		leftPage = new JTabbedPane(JTabbedPane.TOP);
 		leftPage.setVerifyInputWhenFocusTarget(false);
@@ -416,6 +358,6 @@ public class MipsVM_GUI {
 		//frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		
-		staticInit();
+		/*staticInit();*/ runFinal();
 	}
 }
