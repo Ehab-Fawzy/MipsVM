@@ -15,6 +15,9 @@ public class MipsParser {
 
 	public MipsInstructions parse( String line ) {
 		
+		//lw,sw,beq,bne Done
+		// lui waiting
+		
 		initialize() ;
 		SetFuncAndOpcode() ;
 		
@@ -37,9 +40,18 @@ public class MipsParser {
         		         ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
         			}
         			else if (map.get(split[0]).equals("I"))
-        			{   
+        			{   if (specialCase(split[0]))
+        			    {
+        				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
+        				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));
+        						   
+        				   return new MipsInstructions(opcode.get(split[0]),'I',0,Register.getNumber(x) ,immidiate);
+        			    }
+        			
         			    ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
-        			}
+        			}	
+        			else
+        			 return new MipsInstructions(opcode.get(split[0]),'J',Register.getNumber(split[1]));
         		}
              }		
         }
@@ -63,6 +75,11 @@ public class MipsParser {
 			 if (! (split.length ==3))  
 				return false ;	 
 		   }
+		   else if (split[0].equals("jr"))
+		   {	   
+			   if (split.length != 2)
+				   return false ;
+		   }
 		   else
 		   {	   
 		       if (!(GetNumberOfArguments(map.get(split[0])) == split.length-1))
@@ -77,6 +94,11 @@ public class MipsParser {
 	{
 		if (map.get(split[0]).equals("R"))
 		{	
+			if (split[0].equals("jr"))
+			{	
+				if (! Character.toString(split[1].charAt(0)).equals("$"))
+					return false ;
+			}
 			for (int i = 1 ; i< split.length ;i++ )		
 		    {
 				if (!(Character.toString(split[i].charAt(0))).equals("$"))
@@ -87,18 +109,38 @@ public class MipsParser {
 	    }    
 	   else if (map.get(split[0]).equals("I"))
 	   {	  
-		   for (int i = 1 ; i< split.length-1 ;i++ )
-		   {	   
-				if (!(Character.toString(split[i].charAt(0))).equals("$"))
-				{	
-					return false;
-				}	
-		   }	   
-		   if (split[3].contains("$"))
-		   {	   
-			   return false;
+		   if (specialCase(split[0]))
+		   { 
+			  if( !split[1].contains("$") || ! split[2].contains("$") ) 
+				  return false ;
+			  if (! Character.toString(split[1].charAt(0)).equals("$"))
+				  return false ;
 		   }
-	   }	  
+		   else if (split[0].equals("beq") || split[0].equals("bne"))
+		   {	   
+			   for (int i = 1 ; i< split.length-1 ;i++ ) 
+			   {	   
+				 if (!(Character.toString(split[i].charAt(0))).equals("$"))
+				 {	  
+						 return false;
+				 }	
+			   }
+			   if (Character.toString(split[3].charAt(0)).equals("$") || isStringInt(Character.toString(split[3].charAt(0)))) 
+			     return false ;
+		   }
+		   else	   
+		   {	   
+		      for (int i = 1 ; i< split.length-1 ;i++ )
+		      {	   
+				  if (!(Character.toString(split[i].charAt(0))).equals("$"))
+				  {	  
+					 return false;
+				  }	
+		      }	   
+		      if (split[3].contains("$"))		         
+		          return false;
+	      }
+	    }  
 	   else
 	   {  	   
 			if (!(Character.toString(split[1].charAt(0))).equals("$"))
@@ -147,34 +189,56 @@ public class MipsParser {
 		}
 		else if (map.get(split[0]).equals("I"))	
 		{	
-			for (int i = 1 ; i < split.length-1 ; i++ )
+			if (specialCase(split[0]))
 			{	
-				if (Character.toString(split[i].charAt(1)).equals("s"))
-				{
-				  int x = Integer.parseInt(split[i].substring(2));
-				  if ( !((x >= 0) && (x<=7)))	
-				  {		  
-					  return false ;
-				  }  
-				}	
-				else if (Character.toString(split[i].charAt(1)).equals("t"))
-				{
-				  int x = Integer.parseInt(split[i].substring(2));
-		
-				  if (!((x >= 0) && (x<=9)))	
-				  { 			
-					  return false ;
-				  }
-				}	
-				else 
-				{		
-					if (!split[i].equals("$0"))
-					{ 		 
-					  return false ; 
-					}
+				int index = split[2].indexOf("$");
+				if (Character.toString(split[2].charAt(index+1)).equals("s"))
+				{	
+				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
+				    if ( !((x >= 0) && (x<=7)))	
+				    {		  
+					    return false ;
+				    } 
 				}
-			}				
-		}
+				else if (Character.toString(split[2].charAt(index+1)).equals("t"))
+				{	
+				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
+					
+				     if (!((x >= 0) && (x<=9)))	
+				     { 			
+					   return false ;
+				     }
+				}
+			}
+			else	
+			{
+               for (int i = 1 ; i < split.length-1 ; i++ )
+			   {	
+				  if (Character.toString(split[i].charAt(1)).equals("s"))
+				  {
+				    int x = Integer.parseInt(split[i].substring(2));
+				    if ( !((x >= 0) && (x<=7)))	
+				    {		  
+					    return false ;
+				    }  
+			      }	
+				  else if (Character.toString(split[i].charAt(1)).equals("t"))
+				  {
+				    int x = Integer.parseInt(split[i].substring(2));
+		
+				     if (!((x >= 0) && (x<=9)))	
+				     { 			
+					   return false ;
+				     }
+				  }	
+				   else 
+				   {		
+					 if (!split[i].equals("$0")) 		 
+					   return false ; 
+				   }
+			   }				
+			}
+		  }
 		else	
 		{	
 			if (Character.toString(split[1].charAt(1)).equals("s"))
@@ -218,6 +282,13 @@ public class MipsParser {
 		}
 		return number ;
 	}
+	public static boolean specialCase (String type)
+	{
+		if (type.equals("sw") || type.equals("lw"))
+			return true;
+		return false;
+	}
+	
 	public static void SetFuncAndOpcode ()
 	{
 	    func.put("add", 32);
@@ -226,7 +297,8 @@ public class MipsParser {
 	    func.put("and", 4);
 	    func.put("sll", 0);
 	    func.put("slt", 42);
-
+        func.put("jr", 8) ;
+        
 	    opcode.put("addi", 8);
 	    opcode.put("lw", 35);
 	    opcode.put("sw", 43);
@@ -235,6 +307,8 @@ public class MipsParser {
 	    opcode.put("slti", 10);
 	    opcode.put("lui", 15);
 	    opcode.put("beq", 4);
+	    opcode.put("J", 2);
+	    
 	    
 
 	}
@@ -246,6 +320,7 @@ public class MipsParser {
 	    map.put("and", "R");
 	    map.put("sll", "R");
 	    map.put("slt", "R");
+	    map.put("jr", "R");
 
 	    map.put("addi","I");
 	    map.put("lw", "I");
@@ -254,12 +329,24 @@ public class MipsParser {
 	    map.put("ori", "I");
 	    map.put("slti", "I");
 	    map.put("lui", "I");
+	    map.put("beq", "I");
+	    map.put("bne", "I");	    
 	    
-	    map.put("jr", "J");
+	    map.put("jr", "R");
 	    map.put("j", "J");
 	    
-	    map.put("beq", "value1");
-	    map.put("bne", "value2");
+
+	}
+	public static boolean isStringInt(String s)
+	{
+	    try
+	    {
+	        Integer.parseInt(s);
+	        return true;
+	    } catch (NumberFormatException ex)
+	    {
+	        return false;
+	    }
 	}
 	
 }
