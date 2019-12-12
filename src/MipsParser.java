@@ -36,16 +36,16 @@ public class MipsParser {
         		if (checkReg(split))
         		{	
         			if(map.get(split[0]).equals("R"))
-        			{	
+        			{	 if (split[0].equals("jr")) 
+        				  return new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
         		         ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
         			}
         			else if (map.get(split[0]).equals("I"))
         			{   if (specialCase(split[0]))
         			    {
         				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
-        				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));
-        						   
-        				   return new MipsInstructions(opcode.get(split[0]),'I',0,Register.getNumber(x) ,immidiate);
+        				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));       						   
+        				   return new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(split[1]),Register.getNumber(x) ,immidiate);
         			    }
         			
         			    ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
@@ -57,11 +57,13 @@ public class MipsParser {
         }
 		return ret;
 	}
+	/*
 	public int getCode( String code ) {
 		int ret = 0;
 		
 		return ret;
 	}
+	*/
 	public static boolean checkop (String [] split)
 	{
 		if (map.get(split[0]) == null)
