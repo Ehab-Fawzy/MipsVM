@@ -14,7 +14,6 @@ public class MipsVM_GUI_Interface {
 	public static Vector<MipsInstructions> instructionSet = null;
 
 	
-	
 	public static void init() {
 		memSize = 1024;
 		
@@ -33,26 +32,36 @@ public class MipsVM_GUI_Interface {
 		if ( processor == null ) {
 			processor = new CPU();	
 		}
-		
-		updateMemory();
-		updateRegisterFile();
-		
+	
+			
 		if ( instructionList == null ) {
 			instructionList = new Vector<String>();
+		}
+		else {
+			instructionList.clear();
 		}
 		
 		if ( labelToIdx == null ) {
 			labelToIdx = new HashMap<Integer, Integer>();
+		} else {
+			labelToIdx.clear();
 		}
 		
 		if ( compressLabel == null ) {
 			compressLabel = new HashMap<String, Integer>();
+		} else {
+			compressLabel.clear();
 		}
 		
 		if ( instructionSet == null ) {
 			instructionSet = new Vector<MipsInstructions>();
+		} else {
+			instructionSet.clear();
 		}
-
+	
+		updateMemory();
+		updateRegisterFile();
+		
 		cutInstructions(); pc = 0; labelCnt = 0;
 	}
 	
@@ -111,6 +120,8 @@ public class MipsVM_GUI_Interface {
 	
 	public static boolean parseAll() {
 		cutInstructions();
+		/*MipsInstructions obj = new MipsInstructions(8, 'I', 0, 16, 5);
+		instructionSet.add(obj);*/
 		for ( int i = 0; i < instructionList.size(); ++i ) {
 			MipsInstructions object = parser.parse( instructionList.get(i) );
 			if ( object == null ) {
@@ -124,9 +135,23 @@ public class MipsVM_GUI_Interface {
 		return true;
 	}
 	
-	public static void runNext() {		
+	public static void runNext() {	
+		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(pc) );
+		MipsVM_GUI.pcTxt.setText( String.valueOf(pc) );
+		MipsVM_GUI.typeTxt.setText( instructionSet.get(pc).type + " - Type" );
+		
+		if 		( instructionSet.get(pc).type == 'R' ) {
+			MipsVM_GUI.writeRtype();
+		}
+		else if ( instructionSet.get(pc).type == 'I' ) {
+			MipsVM_GUI.writeItype();
+		}
+		else if ( instructionSet.get(pc).type == 'J' ) {
+			MipsVM_GUI.writeJtype();
+		}
+		
 		processor.execute( instructionSet.get(pc) );
-
+		
 		if ( pc >= instructionList.size() ) {
 			MipsVM_GUI.compile.setEnabled(true);
 			MipsVM_GUI.nextStep.setEnabled(false);

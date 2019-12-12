@@ -40,29 +40,19 @@ import javax.swing.JMenuItem;
 public class MipsVM_GUI {
 
 	private JFrame frmMipsvm;
-	private JSeparator separator;
+	
+	public static JTable table;
 	private JSplitPane splitWindow;
 	private JTabbedPane rightPage , leftPage;
-	private JScrollPane registerScroll ;
-	public static JTextArea regValue , regName;
-	private JScrollPane TextSegment;
-	private JScrollPane DataSegment;
-	public static JTextArea textSegmentValues , DataSegmentValues;
-	public static JTextArea codeArea;
-	private JTextField txtAdds;
-	private JTextField txtRType;
-	private JSeparator separator_1;
+	private JSeparator separator , separator_1;
 	public static JButton runAll , nextStep , compile;
-	private JTextField textField;
-	private JTable table;
+	public static JTextField txtAdds , typeTxt , pcTxt;
+	private JScrollPane registerScroll , TextEditor , TextSegment , DataSegment;
+	public static JTextArea regValue , regName , textSegmentValues , DataSegmentValues , codeArea;
+	
 	private TextLineNumber tln , textSegmentTLN , dataSegmentTLN;
-	private JScrollPane TextEditor;
-	private JMenuItem newM;
-	private JMenuItem loadM;
-	private JMenuItem saveM;
-	private JMenuItem exitM;
-	private JMenu registerFileM;
-	private JMenu mnDataSegment;
+	private JMenuItem newM , loadM , saveM , exitM;
+	private JMenu registerFileM , File , mnDataSegment;
 	
 	
 	
@@ -120,7 +110,7 @@ public class MipsVM_GUI {
 		lblInstruct.setFont(new Font("Vrinda", Font.BOLD, 14));
 		
 		txtAdds = new JTextField();
-		txtAdds.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
+		txtAdds.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtAdds.setHorizontalAlignment(SwingConstants.CENTER);
 		txtAdds.setEditable(false);
 		txtAdds.setBackground(SystemColor.menu);
@@ -130,12 +120,12 @@ public class MipsVM_GUI {
 		lblNewJgoodiesLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewJgoodiesLabel.setFont(new Font("Vrinda", Font.BOLD, 14));
 		
-		txtRType = new JTextField();
-		txtRType.setHorizontalAlignment(SwingConstants.CENTER);
-		txtRType.setFont(new Font("Simplified Arabic", Font.PLAIN, 16));
-		txtRType.setEditable(false);
-		txtRType.setColumns(10);
-		txtRType.setBackground(SystemColor.menu);
+		typeTxt = new JTextField();
+		typeTxt.setHorizontalAlignment(SwingConstants.CENTER);
+		typeTxt.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		typeTxt.setEditable(false);
+		typeTxt.setColumns(10);
+		typeTxt.setBackground(SystemColor.menu);
 		
 		separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
@@ -161,37 +151,20 @@ public class MipsVM_GUI {
 		lblProgramCounter.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProgramCounter.setFont(new Font("Vrinda", Font.BOLD, 16));
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Vrinda", Font.BOLD, 18));
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setEditable(false);
-		textField.setBackground(SystemColor.menu);
-		textField.setColumns(10);
+		pcTxt = new JTextField();
+		pcTxt.setFont(new Font("Tahoma", Font.BOLD, 18));
+		pcTxt.setHorizontalAlignment(SwingConstants.CENTER);
+		pcTxt.setEditable(false);
+		pcTxt.setBackground(SystemColor.menu);
+		pcTxt.setColumns(10);
 		
 		table = new JTable();
+		table.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		table.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		table.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		table.setEnabled(false);
 		table.setBackground(SystemColor.menu);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setRowHeight(35);
-		/*table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"opcode", "ra", "rb", "rd", "shmant", "funct"},
-				{"000000", "10001", "10010", "10000", "00000", "10000"},
-			},
-			new String[] {
-				"New column", "New column", "New column", "New column", "New column", "New column"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				true, true, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});*/
-		
+		table.setRowHeight(50);
 		compile = new JButton("Compile");
 		compile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -223,11 +196,11 @@ public class MipsVM_GUI {
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblNewJgoodiesLabel, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-										.addComponent(txtRType, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+										.addComponent(typeTxt, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblProgramCounter, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-										.addComponent(textField, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+										.addComponent(pcTxt, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
 									.addGap(8))
 								.addComponent(lblInstruct, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
 								.addGroup(groupLayout.createSequentialGroup()
@@ -278,8 +251,8 @@ public class MipsVM_GUI {
 										.addComponent(lblProgramCounter))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(txtRType, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-										.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addComponent(typeTxt, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+										.addComponent(pcTxt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 									.addGap(12)))
 							.addGap(11))
 						.addGroup(groupLayout.createSequentialGroup()
@@ -362,7 +335,7 @@ public class MipsVM_GUI {
 		JMenuBar menuBar = new JMenuBar();
 		frmMipsvm.setJMenuBar(menuBar);
 		
-		JMenu File = new JMenu("  File   ");
+		File = new JMenu("  File   ");
 		menuBar.add(File);
 		
 		newM = new JMenuItem("New");
@@ -402,5 +375,119 @@ public class MipsVM_GUI {
 		final JPanel panel = new JPanel();
 
 	    JOptionPane.showMessageDialog(panel, _message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	
+	public static void writeRtype() {
+		
+		int colSize = 6;
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"opcode", "ra", "rb", "rd", "shmant", "funct"},
+				{"000000", "10001", "10010", "10000", "00000", "10000"},
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column", "New column", "New column"
+			}
+		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] {
+				true, true, true, true, true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		
+		/**
+		 * 
+		 * 	Center text alignment
+		 * 
+		 */
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for ( int i = 0; i < colSize; ++i ) {
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
+		}
+	}
+	
+	public static void writeItype() {
+
+		int colSize = 4;
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"opcode", "ra", "rb", "imm"},
+				{"000000", "10001", "10010", "1000100010001000"},
+			},
+			new String[] {
+				"New column", "New column", "New column", "New column"
+			}
+		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] {
+				true, true, true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		
+		for ( int i = 0; i < colSize-1; ++i ) {
+			table.getColumnModel().getColumn(i).setMaxWidth(75);
+		}
+		
+		/**
+		 * 
+		 * 	Center text alignment
+		 * 
+		 */
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for ( int i = 0; i < colSize; ++i ) {
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
+		}
+		
+	}
+	
+	public static void writeJtype() {
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"opcode", "dest"},
+				{"000000", "10001100101000100010001000"},
+			},
+			new String[] {
+				"New column", "New column"
+			}
+		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] {
+				true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+
+		table.getColumnModel().getColumn(0).setMaxWidth(75);
+		
+		/**
+		 * 
+		 * 	Center text alignment
+		 * 
+		 */
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for ( int i = 0; i < 2; ++i ) {
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
+		}
 	}
 }
