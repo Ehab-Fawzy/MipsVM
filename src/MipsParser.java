@@ -47,8 +47,6 @@ public class MipsParser {
         }
 		return ret;
 	}
-	
-	
 	public int getCode( String code ) {
 		int ret = 0;
 		
