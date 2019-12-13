@@ -58,7 +58,7 @@ public class MipsVM_GUI {
 	private TextLineNumber tln , textSegmentTLN , dataSegmentTLN;
 	private JMenuItem newM , loadM , saveM , exitM;
 	private JMenu registerFileM , File , mnDataSegment;
-	
+	private JRadioButton regB , regD , regH , dataD , dataB , dataH;
 	
 	
 	/**
@@ -85,10 +85,10 @@ public class MipsVM_GUI {
 	}
 	
 	public void runFinal() {
-		/*TextEditor.setRowHeaderView(tln);
+		TextEditor.setRowHeaderView(tln);
 		TextSegment.setRowHeaderView(textSegmentTLN);
 		DataSegment.setRowHeaderView( dataSegmentTLN );
-		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);*/
+		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		nextStep.setEnabled(false);
 		runAll.setEnabled(false);
@@ -100,6 +100,9 @@ public class MipsVM_GUI {
 		codeArea.setCaretPosition(0);
 		textSegmentValues.setCaretPosition(0);
 		DataSegmentValues.setCaretPosition(0);	
+		
+		regD.setSelected(true);
+		dataD.setSelected(true);
 	}
 
 	
@@ -463,17 +466,31 @@ public class MipsVM_GUI {
 		registerFileM = new JMenu("Register File   ");
 		menuBar.add(registerFileM);
 		
-		JRadioButton rdbtnBinary = new JRadioButton("Binary      ");
-		registerFileM.add(rdbtnBinary);
+		regB = new JRadioButton("Binary      ");
+		regB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//MipsVM_GUI_Interface.updateRegisterFile();
+			}
+		});
+		registerFileM.add(regB);
 		
-		JRadioButton rdbtnDecimal = new JRadioButton("Decimal        ");
-		registerFileM.add(rdbtnDecimal);
+		regD = new JRadioButton("Decimal        ");
+		registerFileM.add(regD);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("New radio button");
-		registerFileM.add(rdbtnNewRadioButton);
+		regH = new JRadioButton("Hex");
+		registerFileM.add(regH);
 		
 		mnDataSegment = new JMenu("Data Segment");
 		menuBar.add(mnDataSegment);
+		
+		dataB = new JRadioButton("Binary");
+		mnDataSegment.add(dataB);
+		
+		dataD = new JRadioButton("Decimal        ");
+		mnDataSegment.add(dataD);
+		
+		dataH = new JRadioButton("Hex");
+		mnDataSegment.add(dataH);
 		
 		runFinal();
 	}

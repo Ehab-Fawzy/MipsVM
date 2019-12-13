@@ -12,7 +12,9 @@ public class MipsVM_GUI_Interface {
 	public static HashMap<Integer, Integer> labelToIdx = null;
 	public static Vector<String> instructionList = null;
 	public static Vector<MipsInstructions> instructionSet = null;
-
+	
+	public static String registerBase = "decimal", dataSegmentBase = "deimal";
+	
 	
 	public static void init() {
 		memSize = 1024;
@@ -74,9 +76,24 @@ public class MipsVM_GUI_Interface {
 	public static void updateRegisterFile() {		
 		MipsVM_GUI.regName.setText("");
 		MipsVM_GUI.regValue.setText("");
-		for ( int i = 0; i < 32; ++i ) {
-			MipsVM_GUI.regName.append( getRegisterName(i) + "\n" );
-			MipsVM_GUI.regValue.append( REG.getData(i) + "\n" );
+		
+		if 		( registerBase.compareTo("binary") == 0 ) {
+			for ( int i = 0; i < 32; ++i ) {
+				MipsVM_GUI.regName.append( getRegisterName(i) + "\n" );
+				MipsVM_GUI.regValue.append( Integer.toBinaryString( REG.getData(i) ) + "\n" );
+			}
+		}
+		else if ( registerBase.compareTo("decimal")  == 0 ) {
+			for ( int i = 0; i < 32; ++i ) {
+				MipsVM_GUI.regName.append( getRegisterName(i) + "\n" );
+				MipsVM_GUI.regValue.append( REG.getData(i) + "\n" );
+			}
+		}
+		else if ( registerBase.compareTo("hex") == 0 ) {
+			for ( int i = 0; i < 32; ++i ) {
+				MipsVM_GUI.regName.append( getRegisterName(i) + "\n" );
+				MipsVM_GUI.regValue.append( "0x" + Integer.toHexString( REG.getData(i) ) + "\n" );
+			}
 		}
 	}
 	
@@ -120,7 +137,15 @@ public class MipsVM_GUI_Interface {
 	public static void updateMemory() {
 		MipsVM_GUI.DataSegmentValues.setText("");
 		for ( int itr = 0; itr < memSize; ++itr ) {
-			MipsVM_GUI.DataSegmentValues.append( "" + MEM.getValue(itr) + "\n" );
+			if 		( dataSegmentBase.compareTo("decimal") == 0 ) {
+				MipsVM_GUI.DataSegmentValues.append( "" + MEM.getValue(itr) + "\n" );
+			}
+			else if ( dataSegmentBase.compareTo("binary") == 0 ) {
+				MipsVM_GUI.DataSegmentValues.append( "" + Integer.toBinaryString( MEM.getValue(itr) ) + "\n" );
+			}
+			else if ( dataSegmentBase.compareTo("hex") == 0 ) {
+				MipsVM_GUI.DataSegmentValues.append( "" + "0x" + Integer.toHexString( MEM.getValue(itr) ) + "\n" );
+			}
 		}
 	}
 	
@@ -152,8 +177,8 @@ public class MipsVM_GUI_Interface {
 		
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(copyPC) );
 		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + pc ) );
-		MipsVM_GUI.typeTxt.setText( instructionSet.get(copyPC).type + " - Type" );
-		
+		MipsVM_GUI.typeTxt.setText( MipsParser.getType( instructionList.get(copyPC) ) + " - Type" );
+		//MipsVM_GUI.typeTxt.setText( instructionSet.get(copyPC).type + " - Type" );
 		
 		String word = processor.execute( instructionSet.get(copyPC) );
 		if 		( instructionSet.get(copyPC).type == 'R' ) {
@@ -198,7 +223,7 @@ public class MipsVM_GUI_Interface {
 			instructionList.add(all[programCounter]);
 			if ( isLabel(all[programCounter]) ) {
 				compressLabel.put( all[programCounter].substring(0 , all[programCounter].length() - 1) , labelCnt);
-				labelToIdx.put( labelCnt , programCounter );
+				labelToIdx.put( labelCnt , 4*programCounter );
 				labelCnt++;
 			}
 		}
