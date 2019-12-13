@@ -127,8 +127,7 @@ public class MipsParser {
 				if (! Character.toString(split[1].charAt(0)).equals("$"))
 					return false ;
 			}
-			for (int i = 1 ; i< split.length ;i++ )		
-		    {
+			for (int i = 1 ; i< split.length ;i++ ){
 				if (!(Character.toString(split[i].charAt(0))).equals("$"))
 				{	
 					return false;
