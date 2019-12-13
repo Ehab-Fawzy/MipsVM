@@ -26,7 +26,7 @@ public class MipsParser {
         	if(map.get(split[0]).equals("R"))
 			{	 
         		if (split[0].equals("jr")) 
-        			ret = new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
+        			ret = new MipsInstructions('R', Register.getNumber( split[1]),0, 0,func.get(split[0]));
         		else if (split[0].equals("sll")) {
         			ret = new MipsInstructions('R', 0, Register.getNumber( split[2]) , Register.getNumber( split[1]), func.get(split[0]));
         			ret.shmant = getImmediate("sll", split[3]);
@@ -296,6 +296,7 @@ public class MipsParser {
 	    opcode.put("slti", 10);
 	    opcode.put("lui", 15);
 	    opcode.put("beq", 4);
+	    opcode.put("bne", 5);
 	    opcode.put("J", 2);
 	    opcode.put("j", 2);
 	}
@@ -354,9 +355,13 @@ public class MipsParser {
 	}
 	public static boolean valid (String x)
 	{
+		System.out.println(x);
 		int index = x.indexOf("$");
 		if (Character.toString(x.charAt(index+1)).equals("s") ){
-			int num = Integer.parseInt(x.substring(2));
+			if (x.contains(")"))
+				x = x.replace(")", "");
+			
+			int num = Integer.parseInt(x.substring(index+2));
 			  if ( !((num >= 0) && (num<=7)))	
 				  return false ;
 		}

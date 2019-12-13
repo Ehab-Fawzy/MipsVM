@@ -34,6 +34,7 @@ public class CPU {
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 			else if (instruction.funct == 8) {//JumpR
+				System.out.println(instruction.ra);
 				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.REG.getData(instruction.ra);
 				return toBinary(instruction);
 			}
@@ -112,7 +113,7 @@ public class CPU {
 		}
 		else if(instruction.type == 'J') {
 			if (instruction.opcode == 2) {//Jump
-				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm);
+				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.dist);
 				return toBinary(instruction);
 			}
 		}
