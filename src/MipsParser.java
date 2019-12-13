@@ -1,10 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.util.*;
-import java.lang.Math;
-import java.math.BigInteger ;
-import java.lang.Math; 
 
 public class MipsParser {
 	
@@ -37,12 +32,19 @@ public class MipsParser {
 			else if (map.get(split[0]).equals("I"))
 			{   if (specialCase(split[0]))
 			    {
-				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
-				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));       						   
+				   String x = "$0";
+				   int immidiate = 0;
+				   if (split[2].contains("$")) {
+					   x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
+					   immidiate = getImmediate(split[2].substring(0, split[2].indexOf("(")));       						   
+				   }
+				   else { // num , hex
+					   immidiate = getImmediate(split[2]);
+				   }
 				   ret= new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(x),Register.getNumber(split[1]) ,immidiate);
 			    }
 			    else
-			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
+			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , getImmediate(split[3])  ) ;
 			}	
 			else
 			 ret = new MipsInstructions(opcode.get(split[0]),'J',Register.getNumber(split[1]));		
@@ -50,6 +52,24 @@ public class MipsParser {
         else
           return ret ;	
 		return ret;
+	}
+
+	public int getImmediate(String string) {
+		try
+	    {
+			if (string.contains("0x")) {
+				string = string.substring(2);
+				return Integer.parseInt(string, 16);
+			}
+			else {
+				return Integer.parseInt(string);
+			}
+	    }
+		catch (NumberFormatException ex)
+	    {
+			 MipsVM_GUI_Interface.reportError(string + " is not a number");
+	    }
+		return 0;
 	}
 
 	public static boolean checkop (String [] split)
@@ -102,7 +122,7 @@ public class MipsParser {
 	   {	  
 		   if (specialCase(split[0]))
 		   { 
-			  if( ! (Character.toString(split[1].charAt(0)).contains("$")) || ! split[2].contains("$") ) 
+			  if( ! (Character.toString(split[1].charAt(0)).contains("$")) ) 
 				  return false ;
 			  if (! Character.toString(split[1].charAt(0)).equals("$"))
 				  return false ;
@@ -111,9 +131,8 @@ public class MipsParser {
 		   {	   
 			   for (int i = 1 ; i< split.length-1 ;i++ ) 
 			   {	   
-				 if (!(Character.toString(split[i].charAt(0))).equals("$")){	  
+				 if (!(Character.toString(split[i].charAt(0))).equals("$"))	  
 						 return false;
-				 }	
 			   }
 			   if (Character.toString(split[3].charAt(0)).equals("$"))  
 			     return false ;
@@ -123,21 +142,19 @@ public class MipsParser {
 		      for (int i = 1 ; i< split.length-1 ;i++ ){	   
 				  if (!(Character.toString(split[i].charAt(0))).equals("$"))
 					 return false;
-				  
 		      }	   
 		      if (split[3].contains("$"))		         
 		          return false;
-	      }
+		   }
 	    }  
 	   else
 	   {  	   
 			if (!(Character.toString(split[1].charAt(0))).equals("$"))
 				return false;
-			
 	   }
 	   return true;	 
     }  
-	public static boolean checkReg (String [] split)
+	public boolean checkReg (String [] split)
 	{
 		if (split[1].equals("$0"))
 			return false ;
@@ -166,19 +183,33 @@ public class MipsParser {
 
 		}
 		else if (map.get(split[0]).equals("I"))	{	
-			if (specialCase(split[0])){	
-				int index = split[2].indexOf("$");
-				if (Character.toString(split[2].charAt(index+1)).equals("s")){	
-				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
-				    if ( !((x >= 0) && (x<=7)))	
-					    return false ;
+			if (specialCase(split[0])){	// imm = 4100($0), 0x00001000, 0x00001000($0)
+				int indexOfBracket = split[2].indexOf("(");
+				if (indexOfBracket == -1) {
+					indexOfBracket = split[2].length();
+					String imm = split[2].substring(0,indexOfBracket);
+					int returnedImm = getImmediate(imm);
 				}
-				else if (Character.toString(split[2].charAt(index+1)).equals("t")){	
-				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
-					if (!((x >= 0) && (x<=9)))	
-						return false ;
-				     
+				else {
+					String imm = split[2].substring(0,indexOfBracket);
+					int returnedImm = getImmediate(imm);
+					if (split[2].charAt(indexOfBracket+1) != '$') {
+						MipsVM_GUI_Interface.reportError("Wrong Register");
+						return false;
+					}
+					else {
+						boolean isValid = valid(split[2].substring(indexOfBracket+1, split[2].length()-1));
+						if (!isValid) {
+							MipsVM_GUI_Interface.reportError("Wrong Register");
+							return false;
+						}
+					}
 				}
+				/*int index = split[2].indexOf("$");
+				if (index != -1) {
+					return false;
+				}*/
+				
 			}
 			else {
                for (int i = 1 ; i < split.length-1 ; i++ ){	
@@ -316,9 +347,20 @@ public class MipsParser {
 	public static boolean valid (String x)
 	{
 		int index = x.indexOf("$");
-		if (Character.toString(x.charAt(index+1)).equals("s") ||Character.toString(x.charAt(index+1)).equals("t") || Character.toString(x.charAt(index+1)).equals("0"))
-		  return true ;
-		return false ;
+		if (Character.toString(x.charAt(index+1)).equals("s") ){
+			int num = Integer.parseInt(x.substring(2));
+			  if ( !((num >= 0) && (num<=7)))	
+				  return false ;
+		}
+		else if (Character.toString(x.charAt(index+1)).equals("t")) {
+			int num = Integer.parseInt(x.substring(2));
+			if (!((num >= 0) && (num<=9)))	
+				  return false ;
+		}
+		else if (!x. contains("$0")) {
+			return false;
+		}
+		return true ;
 	}
 	
 }
