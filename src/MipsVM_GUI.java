@@ -1,3 +1,14 @@
+/*
+ * Authors: 
+ * Ehap Fawzy
+ * Hussien Feteiha
+ * Khaled Ezzat
+ * Hatem Mamdooh
+ * 
+ * FCAI - CU
+ * 
+ */
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
