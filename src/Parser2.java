@@ -9,7 +9,7 @@ public class Parser2 {
 	public static void main(String[] args) {
 		initialize() ;
 		
-		String line = "slti $s0 65536,$s2 = -1"  ;
+		String line = "sub	 $s2 , $s0 , $s1"  ;
 		//SetFuncAndOpcode() ;
 		
 		String function = null ;
@@ -261,6 +261,11 @@ public class Parser2 {
 			 MipsVM_GUI_Interface.reportError(string + " is not a number");
 	    }
 		return 0;
+	}
+	public static void removeSpaces (String [] split)
+	{
+		for (int i = 0 ; i< split.length ; i++) {
+		   split[0].replaceAll("\\s","");}
 	}
 
 	
