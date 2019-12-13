@@ -65,6 +65,10 @@ public class MipsVM_GUI_Interface {
 		cutInstructions(); pc = 0; labelCnt = 0;
 	}
 	
+	public static void clear() {
+		MEM.clear(); REG.clear();
+	}
+	
 	public static void updateRegisterFile() {		
 		MipsVM_GUI.regName.setText("");
 		MipsVM_GUI.regValue.setText("");
@@ -138,27 +142,29 @@ public class MipsVM_GUI_Interface {
 	
 	public static void runNext() {	
 		
-		if ( isLabel( instructionList.get(pc) ) ) {
+		if ( isLabel( instructionList.get(pc/4) ) ) {
 			pc += 4;
 		}
 		
-		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(pc) );
-		MipsVM_GUI.pcTxt.setText( String.valueOf(pc) );
-		MipsVM_GUI.typeTxt.setText( instructionSet.get(pc).type + " - Type" );
+		int copyPC = pc / 4;
 		
-		if 		( instructionSet.get(pc).type == 'R' ) {
-			MipsVM_GUI.writeRtype();
-		}
-		else if ( instructionSet.get(pc).type == 'I' ) {
-			MipsVM_GUI.writeItype();
-		}
-		else if ( instructionSet.get(pc).type == 'J' ) {
-			MipsVM_GUI.writeJtype();
-		}
-			
-		processor.execute( instructionSet.get(pc) );
+		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(copyPC) );
+		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + pc ) );
+		MipsVM_GUI.typeTxt.setText( instructionSet.get(copyPC).type + " - Type" );
 		
-		if ( pc >= instructionList.size() ) {
+		
+		String word = processor.execute( instructionSet.get(copyPC) );
+		if 		( instructionSet.get(copyPC).type == 'R' ) {
+			MipsVM_GUI.writeRtype( word );
+		}
+		else if ( instructionSet.get(copyPC).type == 'I' ) {
+			MipsVM_GUI.writeItype( word );
+		}
+		else if ( instructionSet.get(copyPC).type == 'J' ) {
+			MipsVM_GUI.writeJtype( word );
+		}
+		
+		if ( pc >= 4*instructionList.size() ) {
 			MipsVM_GUI.compile.setEnabled(true);
 			MipsVM_GUI.nextStep.setEnabled(false);
 			MipsVM_GUI.runAll.setEnabled(false);
@@ -171,7 +177,7 @@ public class MipsVM_GUI_Interface {
 	}
 	
 	public static void runAll() {
-		while ( pc < instructionList.size() ) {
+		while ( pc < 4*instructionList.size() ) {
 			runNext();
 		}
 	}

@@ -23,12 +23,21 @@ import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileSystemView;
+
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 
@@ -75,10 +84,10 @@ public class MipsVM_GUI {
 	}
 	
 	public void runFinal() {
-		/*TextEditor.setRowHeaderView(tln);
+		TextEditor.setRowHeaderView(tln);
 		TextSegment.setRowHeaderView(textSegmentTLN);
 		DataSegment.setRowHeaderView( dataSegmentTLN );
-		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);*/
+		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		nextStep.setEnabled(false);
 		runAll.setEnabled(false);
@@ -350,7 +359,11 @@ public class MipsVM_GUI {
 				compile.setEnabled(true);
 				nextStep.setEnabled(false);
 				runAll.setEnabled(false);
-				MipsVM_GUI_Interface.init();
+				txtAdds.setText("");
+				pcTxt.setText("");
+				typeTxt.setText("");
+				clearTable();
+				MipsVM_GUI_Interface.clear();
 			}
 		});
 		File.add(newM);
@@ -359,15 +372,84 @@ public class MipsVM_GUI {
 		File.add(separator_3);
 		
 		loadM = new JMenuItem("Load Project     ");
+		loadM.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser openFile = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				int returnValue = openFile.showOpenDialog(null);
+				
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					String dir = openFile.getSelectedFile().getAbsolutePath();
+
+					try {
+						BufferedReader infile = new BufferedReader( new FileReader(dir) );
+						
+						String line = "", txt = "";
+						while ( (line = infile.readLine()) != null ) {
+							txt += (line + "\n");
+						}
+						codeArea.setText(txt);
+						rightPage.setSelectedIndex(2);
+						codeArea.setCaretPosition(0);
+						
+						infile.close();
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+			}
+		});
 		File.add(loadM);
 		
 		saveM = new JMenuItem("Save Project");
+		saveM.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser openFile = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				int returnValue = openFile.showSaveDialog(null);
+				
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					String dir = openFile.getSelectedFile().getAbsolutePath();
+
+					try {
+						BufferedWriter outfile = new BufferedWriter( new FileWriter(dir) );
+						
+						String txt = codeArea.getText();
+						
+						String line = "";
+						for ( int i = 0; i < txt.length(); ++i ) {
+							if ( txt.charAt(i) == '\n' ) {
+								outfile.write(line);
+								outfile.newLine();
+								line = "";
+							}
+							else {
+								line += txt.charAt(i);
+							}
+						}
+						
+						outfile.close();
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+			}
+		});
 		File.add(saveM);
 		
 		JSeparator separator_2 = new JSeparator();
 		File.add(separator_2);
 		
 		exitM = new JMenuItem("Exit");
+		exitM.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		File.add(exitM);
 		
 		registerFileM = new JMenu("Register File   ");
@@ -381,27 +463,22 @@ public class MipsVM_GUI {
 	
 	public static void showError( String _error ) {
 		final JPanel panel = new JPanel();
-	    JOptionPane.showMessageDialog(panel, _error, "Error", JOptionPane.ERROR_MESSAGE);
-	    
-	    
-	    
-	    
+	    JOptionPane.showMessageDialog(panel, _error, "Error", JOptionPane.ERROR_MESSAGE);   
 	}
 	
 	public static void showMessage( String _message , String title ) {
 		final JPanel panel = new JPanel();
-
 	    JOptionPane.showMessageDialog(panel, _message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	
-	public static void writeRtype() {
+	public static void writeRtype( String word ) {
 		
 		int colSize = 6;
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"opcode", "ra", "rb", "rd", "shmant", "funct"},
-				{"000000", "10001", "10010", "10000", "00000", "10000"},
+				{ word.substring(0 ,  6) , word.substring(6, 11), word.substring(11, 16) , word.substring(16, 21) , word.substring(21, 26), word.substring(26, 32)},
 			},
 			new String[] {
 				"New column", "New column", "New column", "New column", "New column", "New column"
@@ -431,13 +508,13 @@ public class MipsVM_GUI {
 		}
 	}
 	
-	public static void writeItype() {
+	public static void writeItype( String word ) {
 
 		int colSize = 4;
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"opcode", "ra", "rb", "imm"},
-				{"000000", "10001", "10010", "1000100010001000"},
+				{word.substring(0 ,  6) , word.substring(6, 11), word.substring(11, 16), word.substring(16, 32)},
 			},
 			new String[] {
 				"New column", "New column", "New column", "New column"
@@ -472,11 +549,11 @@ public class MipsVM_GUI {
 		
 	}
 	
-	public static void writeJtype() {
+	public static void writeJtype( String word ) {
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"opcode", "dest"},
-				{"000000", "10001100101000100010001000"},
+				{word.substring(0 ,  6), word.substring(6 , 32)},
 			},
 			new String[] {
 				"New column", "New column"
@@ -507,4 +584,28 @@ public class MipsVM_GUI {
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);	
 		}
 	}
+	
+	
+	public static void clearTable() {
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+			}
+		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] {
+				true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		
+	}
+	
+	
 }
