@@ -15,7 +15,7 @@ public class MipsVM_GUI_Interface {
 	//public static Vector<MipsInstructions> instructionSet = null;
 	public static HashMap<Integer, MipsInstructions> instructionSet = null;
 	
-	public static String registerBase = "decimal", dataSegmentBase = "deimal";
+	public static String registerBase = "decimal", dataSegmentBase = "decimal";
 	
 	
 	public static void init() {
@@ -167,7 +167,6 @@ public class MipsVM_GUI_Interface {
 			}
 			else {
 				instructionSet.put( i , object );
-				//instructionSet.add(object);
 			}
 		}
 		return true;
@@ -208,8 +207,6 @@ public class MipsVM_GUI_Interface {
 			
 			MipsVM_GUI.showMessage( "Program Halt Successfully" , "Program State");
 		}
-		
-		//int pos = MipsVM_GUI.reg
 	}
 	
 	public static void runAll() {
