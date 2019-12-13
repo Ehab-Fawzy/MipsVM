@@ -20,7 +20,7 @@ public class MipsParser {
         line = function+','+line;
         String [] split = line.split(",") ;
         MipsInstructions ret = null ;
-                
+        removeSpaces(split);
         if (checkop(split) && checkArg(split) && checkReg(split) && check(split))
         {		
         	if(map.get(split[0]).equals("R"))
@@ -382,4 +382,10 @@ public class MipsParser {
         function = instruction.substring(0,indexOfSpace);
 		return map.get(function);
 	}
+	public static void removeSpaces (String [] split)
+	{
+		for (int i = 0 ; i< split.length ; i++) {
+		   split[i] = split[i].replaceAll("\\s","");}
+	}
+
 }
