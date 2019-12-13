@@ -115,7 +115,7 @@ public class MipsParser {
 						 return false;
 				 }	
 			   }
-			   if (Character.toString(split[3].charAt(0)).equals("$") || isStringInt(Character.toString(split[3].charAt(0)))) ) 
+			   if (Character.toString(split[3].charAt(0)).equals("$"))  
 			     return false ;
 		   }
 		   else	   
