@@ -111,22 +111,19 @@ public class MipsParser {
 		   {	   
 			   for (int i = 1 ; i< split.length-1 ;i++ ) 
 			   {	   
-				 if (!(Character.toString(split[i].charAt(0))).equals("$"))
-				 {	  
+				 if (!(Character.toString(split[i].charAt(0))).equals("$")){	  
 						 return false;
 				 }	
 			   }
-			   if (Character.toString(split[3].charAt(0)).equals("$") || isStringInt(Character.toString(split[3].charAt(0)))) 
+			   if (Character.toString(split[3].charAt(0)).equals("$") || isStringInt(Character.toString(split[3].charAt(0)))) ) 
 			     return false ;
 		   }
 		   else	   
 		   {	   
-		      for (int i = 1 ; i< split.length-1 ;i++ )
-		      {	   
+		      for (int i = 1 ; i< split.length-1 ;i++ ){	   
 				  if (!(Character.toString(split[i].charAt(0))).equals("$"))
-				  {	  
 					 return false;
-				  }	
+				  
 		      }	   
 		      if (split[3].contains("$"))		         
 		          return false;
@@ -135,141 +132,104 @@ public class MipsParser {
 	   else
 	   {  	   
 			if (!(Character.toString(split[1].charAt(0))).equals("$"))
-			{	
 				return false;
-			}	
+			
 	   }
 	   return true;	 
     }  
 	public static boolean checkReg (String [] split)
 	{
 		if (split[1].equals("$0"))
-		{	
 			return false ;
-		}
+		
 		if (map.get(split[0]).equals("R"))
 		{	
-			for (int i = 1 ; i < split.length ; i++ )
-			{	
-				if (Character.toString(split[i].charAt(1)).equals("s"))
-				{
+			for (int i = 1 ; i < split.length ; i++ ){	
+				if (Character.toString(split[i].charAt(1)).equals("s")){
 				  int x = Integer.parseInt(split[i].substring(2));
-				  if ( !((x >= 0) && (x<=7)))	
-				  {		  
+				  if ( !((x >= 0) && (x<=7)))	 
 					  return false ;
-				  }  
+				  
 				}	
-				else if (Character.toString(split[i].charAt(1)).equals("t"))
-				{
+				else if (Character.toString(split[i].charAt(1)).equals("t")){
 				  int x = Integer.parseInt(split[i].substring(2));
 		
 				  if (!((x >= 0) && (x<=9)))	
-				  { 			
 					  return false ;
-				  }
+				  
 				}	
-				else 
-				{		
+				else {		
 					if (!split[i].equals("$0"))
-					{ 		 
-					  return false ; 
-					}
+						return false ; 
 				}
 			}	
 
 		}
-		else if (map.get(split[0]).equals("I"))	
-		{	
-			if (specialCase(split[0]))
-			{	
+		else if (map.get(split[0]).equals("I"))	{	
+			if (specialCase(split[0])){	
 				int index = split[2].indexOf("$");
-				if (Character.toString(split[2].charAt(index+1)).equals("s"))
-				{	
+				if (Character.toString(split[2].charAt(index+1)).equals("s")){	
 				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
 				    if ( !((x >= 0) && (x<=7)))	
-				    {		  
 					    return false ;
-				    } 
 				}
-				else if (Character.toString(split[2].charAt(index+1)).equals("t"))
-				{	
+				else if (Character.toString(split[2].charAt(index+1)).equals("t")){	
 				    int x = Integer.parseInt(split[2].substring(index+2,split[2].length()-1));
-					
-				     if (!((x >= 0) && (x<=9)))	
-				     { 			
-					   return false ;
-				     }
+					if (!((x >= 0) && (x<=9)))	
+						return false ;
+				     
 				}
 			}
-			else	
-			{
-               for (int i = 1 ; i < split.length-1 ; i++ )
-			   {	
-				  if (Character.toString(split[i].charAt(1)).equals("s"))
-				  {
+			else {
+               for (int i = 1 ; i < split.length-1 ; i++ ){	
+				  if (Character.toString(split[i].charAt(1)).equals("s")){
 				    int x = Integer.parseInt(split[i].substring(2));
 				    if ( !((x >= 0) && (x<=7)))	
-				    {		  
-					    return false ;
-				    }  
-			      }	
-				  else if (Character.toString(split[i].charAt(1)).equals("t"))
-				  {
+				    	return false ;
+				  }	
+				  else if (Character.toString(split[i].charAt(1)).equals("t")){
 				    int x = Integer.parseInt(split[i].substring(2));
 		
 				     if (!((x >= 0) && (x<=9)))	
-				     { 			
-					   return false ;
-				     }
+				    	 return false ;
+				     
 				  }	
-				   else 
-				   {		
+				   else {		
 					 if (!split[i].equals("$0")) 		 
 					   return false ; 
 				   }
 			   }				
 			}
 		  }
-		else	
-		{	
-			if (Character.toString(split[1].charAt(1)).equals("s"))
-			{
+		else {	
+			if (Character.toString(split[1].charAt(1)).equals("s")){
 			  int x = Integer.parseInt(split[1].substring(2));
 			  if ( !((x >= 0) && (x<=7)))	
-			  {		  
 				  return false ;
-			  }  
 			}
-			else if (Character.toString(split[1].charAt(1)).equals("t"))
-			{
+			else if (Character.toString(split[1].charAt(1)).equals("t")){
 			  int x = Integer.parseInt(split[1].substring(2));
 	
 			  if (!((x >= 0) && (x<=9)))	
-			  { 			
 				  return false ;
-			  }
 			}
 			else
 				return false ;
 		}
-			
 	return true ;
+
 	}
 	public static int GetNumberOfArguments (String type)
 	{
 		int number =0;
 		if (type.equals("R"))
-		{	
 			number = 3 ;
-		}
 		else if (type.equals("I"))
-		{	
 			number = 3 ;
-		}
+		
 		else 
-		{	
 			number = 1 ;
-		}
+		
 		return number ;
 	}
 	public static boolean specialCase (String type)
@@ -339,17 +299,14 @@ public class MipsParser {
 	{
 		for (int i = 0 ; i<split.length; i++)
 		{	
-		  if (split[i].contains("$"))
-		  { 	  
+		  if (split[i].contains("$")){
 			  if (!valid(split[i]))
 				  return false;
 		  }
 
 		} 
-		if ( map.get(split[0]).equals("R") && !specialCase(split[0]) )
-		{	  
-			 for(int i = 0 ; i<split.length;i++)  
-			 {	 
+		if ( map.get(split[0]).equals("R") && !specialCase(split[0]) ){	  
+			 for(int i = 0 ; i<split.length;i++)  {	 
 				 if (isStringInt(split[i]) )
 						 return false;
 			 } 
