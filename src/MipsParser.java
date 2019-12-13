@@ -39,7 +39,7 @@ public class MipsParser {
 			    {
 				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
 				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));       						   
-				   ret= new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(split[1]),Register.getNumber(x) ,immidiate);
+				   ret= new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(x),Register.getNumber(split[1]) ,immidiate);
 			    }
 			    else
 			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
