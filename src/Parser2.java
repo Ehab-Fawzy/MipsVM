@@ -81,10 +81,8 @@ public class Parser2 {
 			
 	     	if (NumberOf(split[2],"(") != NumberOf(split[2],")") )
 	     		   return false;
-	     	if (!valid(split[1]))  
+	     	if (!valid(split[1]) || isStringInt(split[0]))  
                   return false ; 
-	     	if (isStringInt(split[0]))
-	     		  return false ;
 			int indexOfBracket = split[2].indexOf("(");
 			if (indexOfBracket == -1) {
 				indexOfBracket = split[2].length();
