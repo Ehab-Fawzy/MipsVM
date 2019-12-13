@@ -121,7 +121,7 @@ public class CPU {
 		}
 		
 		String machineLanguage = toBinary(instruction);
-		MipsVM_GUI_Interface.pc += 1;
+		MipsVM_GUI_Interface.pc += 4;
 		return machineLanguage;
 	}
 	
