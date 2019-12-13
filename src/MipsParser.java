@@ -297,6 +297,7 @@ public class MipsParser {
 	    opcode.put("lui", 15);
 	    opcode.put("beq", 4);
 	    opcode.put("J", 2);
+	    opcode.put("j", 2);
 	}
 	public static void initialize()
 	{

@@ -112,7 +112,7 @@ public class CPU {
 		}
 		else if(instruction.type == 'J') {
 			if (instruction.opcode == 2) {//Jump
-				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm)*4;
+				MipsVM_GUI_Interface.pc = MipsVM_GUI_Interface.labelToIdx.get(instruction.imm);
 				return toBinary(instruction);
 			}
 		}
