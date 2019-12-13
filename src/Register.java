@@ -8,6 +8,13 @@ public class Register {
 			reg[idx] = 0;
 		}
 	}
+	
+	public void clear() {
+		for ( int i = 0; i < 32; ++i ) {
+			reg[i] = 0;
+		}
+	}
+	
 	public int getData(int index) {
 		return reg[index];
 	}

@@ -46,6 +46,7 @@ public class TextLineNumber extends JPanel
     private int lastLine;
     
     private boolean hex = false;
+    private int base;
 
 	private HashMap<String, FontMetrics> fonts;
 
@@ -60,9 +61,9 @@ public class TextLineNumber extends JPanel
 		this(component, 3);
 	}
 	
-	public TextLineNumber(JTextComponent component , boolean isHex)
+	public TextLineNumber(JTextComponent component , boolean isHex , int base)
 	{
-		this(component, 10 , isHex);
+		this(component, 10 , isHex , base);
 	}
 
 	/**
@@ -88,8 +89,9 @@ public class TextLineNumber extends JPanel
 		component.addPropertyChangeListener("font", this);
 	}
 	
-	public TextLineNumber(JTextComponent component, int minimumDisplayDigits , boolean isHex)
+	public TextLineNumber(JTextComponent component, int minimumDisplayDigits , boolean isHex , int _base)
 	{
+		this.base = _base;
 		this.hex = isHex;
 		this.component = component;
 
@@ -321,7 +323,7 @@ public class TextLineNumber extends JPanel
 
 		if (line.getStartOffset() == rowStartOffset) {
 			if ( hex ) {
-				int val = 4096 + 4*index;
+				int val = base + 4*index;
 				String ret = Integer.toHexString(val);
 				//String ret = String.valueOf(1000 + val*4);
 				while ( ret.length() < 8 ) {

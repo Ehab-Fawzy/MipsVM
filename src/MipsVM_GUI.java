@@ -26,13 +26,8 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultEditorKit.CutAction;
 import javax.swing.border.LineBorder;
 import java.awt.Component;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.ComponentOrientation;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
@@ -80,15 +75,21 @@ public class MipsVM_GUI {
 	}
 	
 	public void runFinal() {
-		TextEditor.setRowHeaderView(tln);
+		/*TextEditor.setRowHeaderView(tln);
 		TextSegment.setRowHeaderView(textSegmentTLN);
 		DataSegment.setRowHeaderView( dataSegmentTLN );
-		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);*/
 		
 		nextStep.setEnabled(false);
 		runAll.setEnabled(false);
 		
 		MipsVM_GUI_Interface.init();
+		
+		regName.setCaretPosition(0);
+		regValue.setCaretPosition(0);
+		codeArea.setCaretPosition(0);
+		textSegmentValues.setCaretPosition(0);
+		DataSegmentValues.setCaretPosition(0);	
 	}
 
 	
@@ -168,15 +169,21 @@ public class MipsVM_GUI {
 		compile = new JButton("Compile");
 		compile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MipsVM_GUI_Interface.init();
 				
-				textSegmentValues.setText( codeArea.getText() );
-				boolean validParse = MipsVM_GUI_Interface.parseAll();
-				
-				if ( validParse ) {
-					nextStep.setEnabled(true);
-					runAll.setEnabled(true);
-					compile.setEnabled(false);
+				if ( codeArea.getText().length() > 0 ) {
+					MipsVM_GUI_Interface.init();
+					
+					textSegmentValues.setText( codeArea.getText() );
+					boolean validParse = MipsVM_GUI_Interface.parseAll();
+					
+					if ( validParse ) {
+						nextStep.setEnabled(true);
+						runAll.setEnabled(true);
+						compile.setEnabled(false);
+					}
+				}
+				else {
+					showMessage( "No code to compile" , "Info");
 				}
 			}
 		});
@@ -199,8 +206,8 @@ public class MipsVM_GUI {
 										.addComponent(typeTxt, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(lblProgramCounter, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-										.addComponent(pcTxt, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+										.addComponent(pcTxt, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+										.addComponent(lblProgramCounter, GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
 									.addGap(8))
 								.addComponent(lblInstruct, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
 								.addGroup(groupLayout.createSequentialGroup()
@@ -252,7 +259,7 @@ public class MipsVM_GUI {
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 										.addComponent(typeTxt, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-										.addComponent(pcTxt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+										.addComponent(pcTxt, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
 									.addGap(12)))
 							.addGap(11))
 						.addGroup(groupLayout.createSequentialGroup()
@@ -266,14 +273,13 @@ public class MipsVM_GUI {
 		TextSegment = new JScrollPane();
 		rightPage.addTab("Text Segment", null, TextSegment, null);
 		
-		textSegmentValues = new JTextArea();		
-		textSegmentValues.setEditable(false);
+		textSegmentValues = new JTextArea();
 		textSegmentValues.setForeground(new Color(0, 0, 255));
 		textSegmentValues.setDisabledTextColor(new Color(0, 0, 255));
 		textSegmentValues.setMargin(new Insets(2, 5, 2, 2));
 		textSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		textSegmentValues.setDisabledTextColor(new Color(0, 0, 139));
-		textSegmentTLN = new TextLineNumber(textSegmentValues);
+		textSegmentTLN = new TextLineNumber(textSegmentValues , true , 0);
 		TextSegment.setViewportView(textSegmentValues);
 		
 		DataSegment = new JScrollPane();
@@ -285,7 +291,7 @@ public class MipsVM_GUI {
 		DataSegmentValues.setMargin(new Insets(2, 5, 2, 2));
 		DataSegmentValues.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		DataSegmentValues.setDisabledTextColor(new Color(0, 0, 139));
-		dataSegmentTLN = new TextLineNumber(DataSegmentValues , true);
+		dataSegmentTLN = new TextLineNumber(DataSegmentValues , true , 4096);
 		DataSegment.setViewportView(DataSegmentValues);
 		
 		TextEditor = new JScrollPane();
@@ -299,8 +305,6 @@ public class MipsVM_GUI {
 		codeArea.setDisabledTextColor(new Color(0, 0, 139));
 		
 		tln = new TextLineNumber(codeArea);
-		//TextEditor.setRowHeaderView(tln);
-		
 		TextEditor.setViewportView(codeArea);
 		
 		leftPage = new JTabbedPane(JTabbedPane.TOP);
@@ -339,6 +343,16 @@ public class MipsVM_GUI {
 		menuBar.add(File);
 		
 		newM = new JMenuItem("New");
+		newM.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				codeArea.setText("");
+				textSegmentValues.setText("");
+				compile.setEnabled(true);
+				nextStep.setEnabled(false);
+				runAll.setEnabled(false);
+				MipsVM_GUI_Interface.init();
+			}
+		});
 		File.add(newM);
 		
 		JSeparator separator_3 = new JSeparator();
@@ -367,8 +381,11 @@ public class MipsVM_GUI {
 	
 	public static void showError( String _error ) {
 		final JPanel panel = new JPanel();
-
 	    JOptionPane.showMessageDialog(panel, _error, "Error", JOptionPane.ERROR_MESSAGE);
+	    
+	    
+	    
+	    
 	}
 	
 	public static void showMessage( String _message , String title ) {

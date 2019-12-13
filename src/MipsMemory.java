@@ -1,5 +1,6 @@
 
 public class MipsMemory {
+	
 	String base ;
 	public int memory [];
 	public static void main(String[] args) {
@@ -17,6 +18,13 @@ public class MipsMemory {
 			memory[idx] = 0;
 		}
 	}
+	
+	public void clear() {
+		for ( int i = 0; i < memory.length; ++i ) {
+			memory[i] = 0;
+		}
+	}
+	
 	
 	public void write (String index, int value) {
 		int offset = getOffset(index);

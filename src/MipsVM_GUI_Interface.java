@@ -120,9 +120,10 @@ public class MipsVM_GUI_Interface {
 	
 	public static boolean parseAll() {
 		cutInstructions();
-		/*MipsInstructions obj = new MipsInstructions(8, 'I', 0, 16, 5);
-		instructionSet.add(obj);*/
 		for ( int i = 0; i < instructionList.size(); ++i ) {
+			if ( isLabel( instructionList.get(i) ) ) {
+				continue;
+			}
 			MipsInstructions object = parser.parse( instructionList.get(i) );
 			if ( object == null ) {
 				reportError( "ERROR in line " + (i+1) );
@@ -136,6 +137,11 @@ public class MipsVM_GUI_Interface {
 	}
 	
 	public static void runNext() {	
+		
+		if ( isLabel( instructionList.get(pc) ) ) {
+			pc += 4;
+		}
+		
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(pc) );
 		MipsVM_GUI.pcTxt.setText( String.valueOf(pc) );
 		MipsVM_GUI.typeTxt.setText( instructionSet.get(pc).type + " - Type" );
@@ -149,7 +155,7 @@ public class MipsVM_GUI_Interface {
 		else if ( instructionSet.get(pc).type == 'J' ) {
 			MipsVM_GUI.writeJtype();
 		}
-		
+			
 		processor.execute( instructionSet.get(pc) );
 		
 		if ( pc >= instructionList.size() ) {
@@ -192,14 +198,21 @@ public class MipsVM_GUI_Interface {
 	}
 	
 	private static boolean isLabel( String s ) {
-		int colonsCount = 0;
+		int colonsCount = 0 , specialChars = 0;
 		for ( int i = 0; i < s.length(); ++i ) {
 			if ( s.charAt(i) == ':' ) {
 				colonsCount++;
 			}
+			if ( s.charAt(i) != ':' && s.charAt(i) != '_' ) {
+				if ( !Character.isAlphabetic( s.charAt(i) ) ) {
+					if ( !Character.isDigit( s.charAt(i) ) ) {
+						specialChars++;
+					}
+				}
+			}
 		}
 		
-		if ( colonsCount == 1 && s.length() > 1 && s.charAt( s.length() - 1 ) == ':' ) {
+		if ( colonsCount == 1 && s.length() > 1 && s.charAt( s.length() - 1 ) == ':' && !Character.isDigit( s.charAt(0) ) && specialChars == 0 ) {
 			return true;
 		}
 		return false;
