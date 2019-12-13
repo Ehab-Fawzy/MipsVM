@@ -40,6 +40,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
 
 public class MipsVM_GUI {
 
@@ -84,10 +85,10 @@ public class MipsVM_GUI {
 	}
 	
 	public void runFinal() {
-		TextEditor.setRowHeaderView(tln);
+		/*TextEditor.setRowHeaderView(tln);
 		TextSegment.setRowHeaderView(textSegmentTLN);
 		DataSegment.setRowHeaderView( dataSegmentTLN );
-		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frmMipsvm.setExtendedState(JFrame.MAXIMIZED_BOTH);*/
 		
 		nextStep.setEnabled(false);
 		runAll.setEnabled(false);
@@ -181,6 +182,8 @@ public class MipsVM_GUI {
 				
 				if ( codeArea.getText().length() > 0 ) {
 					MipsVM_GUI_Interface.init();
+					regValue.setCaretPosition(0);
+					DataSegmentValues.setCaretPosition(0);
 					
 					textSegmentValues.setText( codeArea.getText() );
 					boolean validParse = MipsVM_GUI_Interface.parseAll();
@@ -189,6 +192,7 @@ public class MipsVM_GUI {
 						nextStep.setEnabled(true);
 						runAll.setEnabled(true);
 						compile.setEnabled(false);
+						rightPage.setSelectedIndex(0);
 					}
 				}
 				else {
@@ -364,6 +368,10 @@ public class MipsVM_GUI {
 				typeTxt.setText("");
 				clearTable();
 				MipsVM_GUI_Interface.clear();
+				
+				codeArea.setCaretPosition(0);
+				regValue.setCaretPosition(0);
+				DataSegmentValues.setCaretPosition(0);
 			}
 		});
 		File.add(newM);
@@ -454,6 +462,15 @@ public class MipsVM_GUI {
 		
 		registerFileM = new JMenu("Register File   ");
 		menuBar.add(registerFileM);
+		
+		JRadioButton rdbtnBinary = new JRadioButton("Binary      ");
+		registerFileM.add(rdbtnBinary);
+		
+		JRadioButton rdbtnDecimal = new JRadioButton("Decimal        ");
+		registerFileM.add(rdbtnDecimal);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("New radio button");
+		registerFileM.add(rdbtnNewRadioButton);
 		
 		mnDataSegment = new JMenu("Data Segment");
 		menuBar.add(mnDataSegment);
@@ -606,6 +623,4 @@ public class MipsVM_GUI {
 		});
 		
 	}
-	
-	
 }
