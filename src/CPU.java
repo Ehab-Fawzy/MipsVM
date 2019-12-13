@@ -18,7 +18,7 @@ public class CPU {
 	public String execute( MipsInstructions instruction ) {
 		if (instruction.type == 'R') {
 			if (instruction.funct == 0) {//sll
-				int answer = MipsVM_GUI_Interface.REG.getData(instruction.rb) << MipsVM_GUI_Interface.REG.getData(instruction.shmant);//rd=rt<<sa
+				int answer = MipsVM_GUI_Interface.REG.getData(instruction.rb) << instruction.shmant;//rd=rt<<sa
 				MipsVM_GUI_Interface.REG.setData(instruction.rd, answer);
 			}
 			else if (instruction.funct == 1) {//sub
@@ -134,7 +134,7 @@ public class CPU {
 			output += convertToBinary(instruction.rb, 5);
 			output += convertToBinary(instruction.rd, 5);
 			output += convertToBinary(instruction.shmant, 5);
-			output += convertToBinary(instruction.funct, 5);
+			output += convertToBinary(instruction.funct, 6);
 		}
 		else if (instruction.type == 'I') {
 			output += convertToBinary(instruction.opcode, 6);

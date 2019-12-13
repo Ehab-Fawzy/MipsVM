@@ -183,7 +183,10 @@ public class MipsParser {
 		//here
 		if (map.get(split[0]).equals("R"))
 		{	
-			for (int i = 1 ; i < split.length ; i++ ){	
+			for (int i = 1 ; i < split.length ; i++ ){
+				if (i == 3 && split[0].equals("sll")) {
+					continue;
+				}
 				if (Character.toString(split[i].charAt(1)).equals("s")){
 				  int x = Integer.parseInt(split[i].substring(2));
 				  if ( !((x >= 0) && (x<=7)))	 
@@ -342,7 +345,7 @@ public class MipsParser {
 		} 
 		if ( map.get(split[0]).equals("R") && !specialCase(split[0]) ){	  
 			 for(int i = 0 ; i<split.length;i++)  {	 
-				 if (isStringInt(split[i]) )
+				 if (isStringInt(split[i]) && !split[0].equals("sll") )
 						 return false;
 			 } 
 		}
