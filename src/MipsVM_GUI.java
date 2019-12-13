@@ -100,6 +100,7 @@ public class MipsVM_GUI {
 		
 		regD.setSelected(true);
 		dataD.setSelected(true);
+		rightPage.setSelectedIndex(2);
 	}
 
 	
