@@ -36,40 +36,59 @@ public class MipsParser {
 				   int immidiate = 0;
 				   if (split[2].contains("$")) {
 					   x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
-					   immidiate = getImmediate(split[2].substring(0, split[2].indexOf("(")));       						   
+					   immidiate = getImmediate(split[0], split[2].substring(0, split[2].indexOf("(")));       						   
 				   }
 				   else { // num , hex
-					   immidiate = getImmediate(split[2]);
+					   immidiate = getImmediate(split[0], split[2]);
 				   }
 				   ret= new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(x),Register.getNumber(split[1]) ,immidiate);
 			    }
 			    else
-			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , getImmediate(split[3])  ) ;
+			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , getImmediate(split[0], split[3])  ) ;
+				
 			}	
-			else
-			 ret = new MipsInstructions(opcode.get(split[0]),'J',Register.getNumber(split[1]));		
+			else{
+				int labelID = -1;
+				if (MipsVM_GUI_Interface.compressLabel.containsKey(split[1]))
+					labelID = MipsVM_GUI_Interface.compressLabel.get(split[1]);
+				else 
+					return null;
+				ret = new MipsInstructions(opcode.get(split[0]),'J',labelID);		
+			}
         }
         else
-          return ret ;	
+          return null ;
+        if (ret.imm == -1) {
+			return null;
+		}
 		return ret;
 	}
 
-	public int getImmediate(String string) {
+	public int getImmediate(String operation, String imm) {
+		if (operation.equals("bne") || operation.equals("beq")) {
+			int labelID = -1;
+			if (MipsVM_GUI_Interface.compressLabel.containsKey(imm)){
+				labelID = MipsVM_GUI_Interface.compressLabel.get(imm);
+			}
+			if (labelID == -1)
+				MipsVM_GUI_Interface.reportError(imm + " is not a number");
+			return labelID; 
+		}
 		try
 	    {
-			if (string.contains("0x")) {
-				string = string.substring(2);
-				return Integer.parseInt(string, 16);
+			if (imm.contains("0x")) {
+				imm = imm.substring(2);
+				return Integer.parseInt(imm, 16);
 			}
 			else {
-				return Integer.parseInt(string);
+				return Integer.parseInt(imm);
 			}
 	    }
 		catch (NumberFormatException ex)
 	    {
-			 MipsVM_GUI_Interface.reportError(string + " is not a number");
+			 MipsVM_GUI_Interface.reportError(imm + " is not a number");
 	    }
-		return 0;
+		return -1;
 	}
 
 	public static boolean checkop (String [] split)
@@ -82,13 +101,11 @@ public class MipsParser {
 		{
 		   if (specialCase(split[0]))	
 		   {   
-			 if (split[0].equals("lw") || split[0].equals("lui") || split[0].equals("sw"))  
-			 {	 
+			 if (split[0].equals("lw") || split[0].equals("lui") || split[0].equals("sw")){	 
 			   if ( split.length !=3)  
 			 	return false ;	 
 			 }  
-			 else
-			 { 	 
+			 else{ 	 
 				 if (split.length != 2)
 					 return false ;
 			 }
@@ -147,10 +164,8 @@ public class MipsParser {
 		          return false;
 		   }
 	    }  
-	   else
-	   {  	   
-			if (!(Character.toString(split[1].charAt(0))).equals("$"))
-				return false;
+	   else { // J type
+		   
 	   }
 	   return true;	 
     }  
@@ -188,11 +203,11 @@ public class MipsParser {
 				if (indexOfBracket == -1) {
 					indexOfBracket = split[2].length();
 					String imm = split[2].substring(0,indexOfBracket);
-					int returnedImm = getImmediate(imm);
+					int returnedImm = getImmediate(split[0], imm);
 				}
 				else {
 					String imm = split[2].substring(0,indexOfBracket);
-					int returnedImm = getImmediate(imm);
+					int returnedImm = getImmediate(split[0], imm);
 					if (split[2].charAt(indexOfBracket+1) != '$') {
 						MipsVM_GUI_Interface.reportError("Wrong Register");
 						return false;
@@ -205,13 +220,8 @@ public class MipsParser {
 						}
 					}
 				}
-				/*int index = split[2].indexOf("$");
-				if (index != -1) {
-					return false;
-				}*/
-				
 			}
-			else {
+			else { 
                for (int i = 1 ; i < split.length-1 ; i++ ){	
 				  if (Character.toString(split[i].charAt(1)).equals("s")){
 				    int x = Integer.parseInt(split[i].substring(2));
@@ -230,22 +240,13 @@ public class MipsParser {
 					   return false ; 
 				   }
 			   }				
+		   }
+		}
+		else { // J type	
+			if (split.length > 2) { 
+				MipsVM_GUI_Interface.reportError("Invalid arguments");
+				return false;
 			}
-		  }
-		else {	
-			if (Character.toString(split[1].charAt(1)).equals("s")){
-			  int x = Integer.parseInt(split[1].substring(2));
-			  if ( !((x >= 0) && (x<=7)))	
-				  return false ;
-			}
-			else if (Character.toString(split[1].charAt(1)).equals("t")){
-			  int x = Integer.parseInt(split[1].substring(2));
-	
-			  if (!((x >= 0) && (x<=9)))	
-				  return false ;
-			}
-			else
-				return false ;
 		}
 	return true ;
 
@@ -253,12 +254,9 @@ public class MipsParser {
 	public static int GetNumberOfArguments (String type)
 	{
 		int number =0;
-		if (type.equals("R"))
+		if (type.equals("R") || type.equals("I"))
 			number = 3 ;
-		else if (type.equals("I"))
-			number = 3 ;
-		
-		else 
+		else //J
 			number = 1 ;
 		
 		return number ;
@@ -310,7 +308,6 @@ public class MipsParser {
 	    map.put("beq", "I");
 	    map.put("bne", "I");	    
 	    
-	    map.put("jr", "R");
 	    map.put("j", "J");
 	    
 
