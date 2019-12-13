@@ -67,6 +67,8 @@ public class MipsVM_GUI_Interface {
 	
 	public static void clear() {
 		MEM.clear(); REG.clear();
+		updateMemory();
+		updateRegisterFile();
 	}
 	
 	public static void updateRegisterFile() {		
@@ -195,7 +197,7 @@ public class MipsVM_GUI_Interface {
 		for ( int programCounter = 0; programCounter < all.length; ++programCounter ) {
 			instructionList.add(all[programCounter]);
 			if ( isLabel(all[programCounter]) ) {
-				compressLabel.put( all[programCounter] , labelCnt);
+				compressLabel.put( all[programCounter].substring(0 , all[programCounter].length() - 1) , labelCnt);
 				labelToIdx.put( labelCnt , programCounter );
 				labelCnt++;
 			}
