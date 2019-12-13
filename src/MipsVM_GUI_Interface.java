@@ -11,7 +11,9 @@ public class MipsVM_GUI_Interface {
 	public static HashMap<String, Integer> compressLabel = null; 
 	public static HashMap<Integer, Integer> labelToIdx = null;
 	public static Vector<String> instructionList = null;
-	public static Vector<MipsInstructions> instructionSet = null;
+	
+	//public static Vector<MipsInstructions> instructionSet = null;
+	public static HashMap<Integer, MipsInstructions> instructionSet = null;
 	
 	public static String registerBase = "decimal", dataSegmentBase = "deimal";
 	
@@ -56,7 +58,7 @@ public class MipsVM_GUI_Interface {
 		}
 		
 		if ( instructionSet == null ) {
-			instructionSet = new Vector<MipsInstructions>();
+			instructionSet = new HashMap<Integer, MipsInstructions>();
 		} else {
 			instructionSet.clear();
 		}
@@ -161,7 +163,8 @@ public class MipsVM_GUI_Interface {
 				return false;
 			}
 			else {
-				instructionSet.add(object);
+				instructionSet.put( i , object );
+				//instructionSet.add(object);
 			}
 		}
 		return true;
@@ -175,19 +178,19 @@ public class MipsVM_GUI_Interface {
 		
 		int copyPC = pc / 4;
 		
+		Character instructionType = instructionList.get(copyPC).charAt(0);
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(copyPC) );
 		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + pc ) );
-		MipsVM_GUI.typeTxt.setText( MipsParser.getType( instructionList.get(copyPC) ) + " - Type" );
-		//MipsVM_GUI.typeTxt.setText( instructionSet.get(copyPC).type + " - Type" );
-		
+		MipsVM_GUI.typeTxt.setText( instructionType + " - Type" );
+
 		String word = processor.execute( instructionSet.get(copyPC) );
-		if 		( instructionSet.get(copyPC).type == 'R' ) {
+		if 		( instructionType == 'R' ) {
 			MipsVM_GUI.writeRtype( word );
 		}
-		else if ( instructionSet.get(copyPC).type == 'I' ) {
+		else if ( instructionType == 'I' ) {
 			MipsVM_GUI.writeItype( word );
 		}
-		else if ( instructionSet.get(copyPC).type == 'J' ) {
+		else if ( instructionType == 'J' ) {
 			MipsVM_GUI.writeJtype( word );
 		}
 		
@@ -255,4 +258,11 @@ public class MipsVM_GUI_Interface {
 		MipsVM_GUI.showError(error);
 	}
 	
+	public static void changeRegisterBase( String _base ) {
+		registerBase = _base; updateRegisterFile();
+	}
+	
+	public static void changeDataSegmentBase( String _base ) {
+		dataSegmentBase = _base; updateMemory();
+	}
 }

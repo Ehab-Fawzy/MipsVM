@@ -469,15 +469,34 @@ public class MipsVM_GUI {
 		regB = new JRadioButton("Binary      ");
 		regB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//MipsVM_GUI_Interface.updateRegisterFile();
+				MipsVM_GUI_Interface.changeRegisterBase("binary");
+				regB.setSelected(true);
+				regD.setSelected(false);
+				regH.setSelected(false);
 			}
 		});
 		registerFileM.add(regB);
 		
 		regD = new JRadioButton("Decimal        ");
+		regD.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MipsVM_GUI_Interface.changeRegisterBase("decimal");
+				regB.setSelected(false);
+				regD.setSelected(true);
+				regH.setSelected(false);
+			}
+		});
 		registerFileM.add(regD);
 		
 		regH = new JRadioButton("Hex");
+		regH.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MipsVM_GUI_Interface.changeRegisterBase("hex");
+				regB.setSelected(false);
+				regD.setSelected(false);
+				regH.setSelected(true);
+			}
+		});
 		registerFileM.add(regH);
 		
 		mnDataSegment = new JMenu("Data Segment");
@@ -639,5 +658,9 @@ public class MipsVM_GUI {
 			}
 		});
 		
+	}
+	
+	public static void scrollUP() {
+		//codeArea;
 	}
 }
