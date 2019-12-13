@@ -29,32 +29,29 @@ public class MipsParser {
         String [] split = line.split(",") ;
         MipsInstructions ret = null ;
                 
-        if (checkop(split))
+        if (checkop(split) && checkArg(split) && checkReg(split))
         {		
-        	if (checkArg(split))
-        	{	
-        		if (checkReg(split))
-        		{	
-        			if(map.get(split[0]).equals("R"))
-        			{	 if (split[0].equals("jr")) 
-        				  return new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
-        		         ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
-        			}
-        			else if (map.get(split[0]).equals("I"))
-        			{   if (specialCase(split[0]))
-        			    {
-        				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
-        				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));       						   
-        				   return new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(split[1]),Register.getNumber(x) ,immidiate);
-        			    }
-        			
-        			    ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
-        			}	
-        			else
-        			 return new MipsInstructions(opcode.get(split[0]),'J',Register.getNumber(split[1]));
-        		}
-             }		
+        	if(map.get(split[0]).equals("R"))
+			{	 if (split[0].equals("jr")) 
+				  ret = new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
+			     else
+			     ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
+			}
+			else if (map.get(split[0]).equals("I"))
+			{   if (specialCase(split[0]))
+			    {
+				   String x = split[2].substring(split[2].indexOf("$"),split[2].length()-1) ; 
+				   int immidiate = Integer.parseInt(split[2].substring(0, split[2].indexOf("(")));       						   
+				   ret= new MipsInstructions(opcode.get(split[0]),'I',Register.getNumber(split[1]),Register.getNumber(x) ,immidiate);
+			    }
+			    else
+			      ret = new MipsInstructions (opcode.get(split[0]),'I', Register.getNumber( split[2] ) , Register.getNumber( split[1] ) , Integer.parseInt(split[3] ) ) ;
+			}	
+			else
+			 ret = new MipsInstructions(opcode.get(split[0]),'J',Register.getNumber(split[1]));		
         }
+        else
+          return ret ;	
 		return ret;
 	}
 	/*
