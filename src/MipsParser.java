@@ -24,10 +24,14 @@ public class MipsParser {
         if (checkop(split) && checkArg(split) && checkReg(split) && check(split))
         {		
         	if(map.get(split[0]).equals("R"))
-			{	 if (split[0].equals("jr")) 
-				  ret = new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
-			     else
-			     ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
+			{	 
+        		if (split[0].equals("jr")) 
+        			ret = new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
+        		else if (split[0].equals("sll")) {
+        			
+        		}
+			    else
+			    	ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
 			}
 			else if (map.get(split[0]).equals("I"))
 			{   if (specialCase(split[0]))
