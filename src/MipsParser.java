@@ -28,8 +28,11 @@ public class MipsParser {
         		if (split[0].equals("jr")) 
         			ret = new MipsInstructions('R', 0,0, Register.getNumber( split[1]),func.get(split[0]));
         		else if (split[0].equals("sll")) {
+        			ret = new MipsInstructions('R', 0, Register.getNumber( split[2]) , Register.getNumber( split[1]), func.get(split[0]));
+        			ret.shmant = getImmediate("sll", split[3]);
         			
         		}
+
 			    else
 			    	ret = new MipsInstructions ('R' , Register.getNumber( split[2] ) , Register.getNumber( split[3] ) , Register.getNumber( split[1] ) , func.get(split[0])) ;	
 			}
@@ -134,7 +137,8 @@ public class MipsParser {
 			for (int i = 1 ; i< split.length ;i++ ){
 				if (!(Character.toString(split[i].charAt(0))).equals("$"))
 				{	
-					return false;
+					if (!split[0].equals("sll"))
+							return false;
 				}		
 	     	}
 	    }    
@@ -176,7 +180,7 @@ public class MipsParser {
 	{
 		if (split[1].equals("$0"))
 			return false ;
-		
+		//here
 		if (map.get(split[0]).equals("R"))
 		{	
 			for (int i = 1 ; i < split.length ; i++ ){	
