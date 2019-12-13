@@ -369,5 +369,11 @@ public class MipsParser {
 		}
 		return true ;
 	}
-	
+	public static String getType (String instruction) {
+		//initialize();
+		String function = null ;
+        int indexOfSpace = instruction.indexOf(" ");
+        function = instruction.substring(0,indexOfSpace);
+		return map.get(function);
+	}
 }
