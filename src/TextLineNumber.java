@@ -15,6 +15,9 @@ import javax.swing.text.*;
  *  This class was designed to be used as a component added to the row header
  *  of a JScrollPane.
  */
+
+
+@SuppressWarnings("serial")
 public class TextLineNumber extends JPanel
 	implements CaretListener, DocumentListener, PropertyChangeListener
 {
@@ -332,7 +335,7 @@ public class TextLineNumber extends JPanel
 				ret = "0x" + ret;
 				return ret;
 			}
-			return String.valueOf(index + 1);
+			return String.valueOf(index);
 		}
 		else
 		{

@@ -3,14 +3,6 @@ public class MipsMemory {
 	
 	String base ;
 	public int memory [];
-	public static void main(String[] args) {
-		MipsMemory memory = new MipsMemory(1024, "0x00001000");
-		System.out.println(Integer.toHexString(4100));
-		System.out.println(memory.getOffset("0x00001004"));
-		System.out.println(memory.getOffset("0x00001008"));
-		System.out.println(memory.getOffset("0x0000100C"));
-		System.out.println(memory.getOffset("0x00001010"));
-	}
 	public MipsMemory(int size, String base) {
 		memory = new int[size];
 		this.base = new String(base);

@@ -1,20 +1,4 @@
 public class CPU {
-	public static void main(String[] args) {
-		CPU cpu = new CPU();
-		MipsVM_GUI_Interface m = new MipsVM_GUI_Interface();
-		MipsVM_GUI_Interface.REG.setData(1, 4100);
-		MipsVM_GUI_Interface.REG.setData(3, 999);
-		MipsVM_GUI_Interface.MEM.write(Integer.toHexString(4104), 6);
-		MipsInstructions i = new MipsInstructions(35, 'I', 1, 2, 4) ;
-		cpu.execute(i);
-		System.out.println(MipsVM_GUI_Interface.REG.getData(2));
-		
-		
-		MipsInstructions o = new MipsInstructions(43, 'I', 1, 3, 8);
-		cpu.execute(o);
-		System.out.println(MipsVM_GUI_Interface.MEM.getValue(Integer.toHexString(4100+8)));
-	}
-	
 	public String execute( MipsInstructions instruction ) {
 		if (instruction.type == 'R') {
 			if (instruction.funct == 0) {//sll

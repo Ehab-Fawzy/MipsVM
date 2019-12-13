@@ -59,6 +59,9 @@ public class MipsVM_GUI {
 	private JMenuItem newM , loadM , saveM , exitM;
 	private JMenu registerFileM , File , mnDataSegment;
 	private JRadioButton regB , regD , regH , dataD , dataB , dataH;
+	private JMenu mnOthers;
+	private JMenuItem mntmVersion;
+	private JMenuItem mntmAuthers;
 	
 	
 	/**
@@ -182,7 +185,8 @@ public class MipsVM_GUI {
 					regValue.setCaretPosition(0);
 					DataSegmentValues.setCaretPosition(0);
 					
-					textSegmentValues.setText( codeArea.getText() );
+					textSegmentValues.setText( eraseEmptyLines(codeArea.getText()) );
+					
 					boolean validParse = MipsVM_GUI_Interface.parseAll();
 					
 					if ( validParse ) {
@@ -285,6 +289,7 @@ public class MipsVM_GUI {
 		rightPage.addTab("Text Segment", null, TextSegment, null);
 		
 		textSegmentValues = new JTextArea();
+		textSegmentValues.setEditable(false);
 		textSegmentValues.setForeground(new Color(0, 0, 255));
 		textSegmentValues.setDisabledTextColor(new Color(0, 0, 255));
 		textSegmentValues.setMargin(new Insets(2, 5, 2, 2));
@@ -297,6 +302,7 @@ public class MipsVM_GUI {
 		rightPage.addTab("Data Segment", null, DataSegment, null);
 		
 		DataSegmentValues = new JTextArea();
+		DataSegmentValues.setEditable(false);
 		DataSegmentValues.setForeground(new Color(0, 0, 255));
 		DataSegmentValues.setDisabledTextColor(new Color(0, 0, 255));
 		DataSegmentValues.setMargin(new Insets(2, 5, 2, 2));
@@ -494,17 +500,79 @@ public class MipsVM_GUI {
 		});
 		registerFileM.add(regH);
 		
-		mnDataSegment = new JMenu("Data Segment");
+		mnDataSegment = new JMenu("Data Segment   ");
 		menuBar.add(mnDataSegment);
 		
 		dataB = new JRadioButton("Binary");
+		dataB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MipsVM_GUI_Interface.changeDataSegmentBase("binary");
+				dataB.setSelected(true);
+				dataD.setSelected(false);
+				dataH.setSelected(false);
+				scrollUP();
+			}
+		});
 		mnDataSegment.add(dataB);
 		
 		dataD = new JRadioButton("Decimal        ");
+		dataD.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MipsVM_GUI_Interface.changeDataSegmentBase("decimal");
+				dataB.setSelected(false);
+				dataD.setSelected(true);
+				dataH.setSelected(false);
+				scrollUP();
+			}
+		});
 		mnDataSegment.add(dataD);
 		
 		dataH = new JRadioButton("Hex");
+		dataH.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MipsVM_GUI_Interface.changeDataSegmentBase("hex");
+				dataB.setSelected(false);
+				dataD.setSelected(false);
+				dataH.setSelected(true);
+				scrollUP();
+			}
+		});
 		mnDataSegment.add(dataH);
+		
+		mnOthers = new JMenu("Others");
+		menuBar.add(mnOthers);
+		
+		mntmVersion = new JMenuItem("Version     ");
+		mntmVersion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String str = "";
+				str += "Version 1 of Mips virtual machine\n";
+				str += "instructions included in this version:              \n";
+				str += "    R-Type:-\n";
+				str += "        and  , or  , slt  , sll , jr.\n\n";
+				str += "    I-Type:-\n";
+				str += "        addi , ori , slti , lui , beq , bne , lw , sw.\n\n";
+				str += "    J-Type:-\n";
+				str += "        j.\n\n";
+				
+				showMessage( str , "Version");
+			}
+		});
+		mnOthers.add(mntmVersion);
+		
+		mntmAuthers = new JMenuItem("Owners");
+		mntmAuthers.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String str = "";
+				str += "Student 1: Ehab Fawzy                   \n";
+				str += "Student 2: Khaled Ezzat                  \n";
+				str += "Student 3: Hussien Feteha                   \n";
+				str += "Student 4: Hatem Mamdoh                   \n";
+				
+				showMessage( str , "Owners");
+			}
+		});
+		mnOthers.add(mntmAuthers);
 		
 		runFinal();
 	}
@@ -537,7 +605,7 @@ public class MipsVM_GUI {
 			 */
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] {
-				true, true, true, true, true, true
+					false, false, false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -573,7 +641,7 @@ public class MipsVM_GUI {
 			 */
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] {
-				true, true, true, true
+				false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -612,7 +680,7 @@ public class MipsVM_GUI {
 			 */
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] {
-				true, true
+				false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -661,5 +729,17 @@ public class MipsVM_GUI {
 		regName.setCaretPosition(0);
 		textSegmentValues.setCaretPosition(0);
 		DataSegmentValues.setCaretPosition(0);
+	}
+	
+	public static String eraseEmptyLines( String txt ) {
+		String ret = "";
+		String all[] = txt.split("\n");
+		
+		for ( int i = 0; i < all.length; ++i ) {
+			if ( all[i].length() > 0 ) {
+				ret += (all[i] + "\n");
+			}
+		}
+		return ret;
 	}
 }

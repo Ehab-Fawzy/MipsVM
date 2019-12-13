@@ -213,11 +213,11 @@ public class MipsParser {
 				if (indexOfBracket == -1) {
 					indexOfBracket = split[2].length();
 					String imm = split[2].substring(0,indexOfBracket);
-					int returnedImm = getImmediate(split[0], imm);
+					getImmediate(split[0], imm);
 				}
 				else {
 					String imm = split[2].substring(0,indexOfBracket);
-					int returnedImm = getImmediate(split[0], imm);
+					getImmediate(split[0], imm);
 					if (split[2].charAt(indexOfBracket+1) != '$') {
 						MipsVM_GUI_Interface.reportError("Wrong Register");
 						return false;
@@ -355,7 +355,6 @@ public class MipsParser {
 	}
 	public static boolean valid (String x)
 	{
-		System.out.println(x);
 		int index = x.indexOf("$");
 		if (Character.toString(x.charAt(index+1)).equals("s") ){
 			if (x.contains(")"))
@@ -366,7 +365,9 @@ public class MipsParser {
 				  return false ;
 		}
 		else if (Character.toString(x.charAt(index+1)).equals("t")) {
-			int num = Integer.parseInt(x.substring(2));
+			if (x.contains(")"))
+				x = x.replace(")", "");
+			int num = Integer.parseInt(x.substring(index + 2));
 			if (!((num >= 0) && (num<=9)))	
 				  return false ;
 		}
@@ -376,7 +377,6 @@ public class MipsParser {
 		return true ;
 	}
 	public static String getType (String instruction) {
-		//initialize();
 		String function = null ;
         int indexOfSpace = instruction.indexOf(" ");
         function = instruction.substring(0,indexOfSpace);

@@ -216,7 +216,7 @@ public class MipsVM_GUI_Interface {
 	}
 	
 	public static void cutInstructions() {
-		String text = MipsVM_GUI.codeArea.getText();
+		String text = MipsVM_GUI.textSegmentValues.getText();
 		pc = 0; labelCnt = 0;
 		
 		if ( instructionList == null ) {
