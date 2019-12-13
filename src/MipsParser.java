@@ -15,9 +15,6 @@ public class MipsParser {
 
 	public MipsInstructions parse( String line ) {
 		
-		//lw,sw,beq,bne Done
-		// lui waiting
-		
 		initialize() ;
 		SetFuncAndOpcode() ;
 		
@@ -29,7 +26,7 @@ public class MipsParser {
         String [] split = line.split(",") ;
         MipsInstructions ret = null ;
                 
-        if (checkop(split) && checkArg(split) && checkReg(split))
+        if (checkop(split) && checkArg(split) && checkReg(split) && check(split))
         {		
         	if(map.get(split[0]).equals("R"))
 			{	 if (split[0].equals("jr")) 
@@ -54,13 +51,7 @@ public class MipsParser {
           return ret ;	
 		return ret;
 	}
-	/*
-	public int getCode( String code ) {
-		int ret = 0;
-		
-		return ret;
-	}
-	*/
+
 	public static boolean checkop (String [] split)
 	{
 		if (map.get(split[0]) == null)
@@ -69,24 +60,25 @@ public class MipsParser {
 		}
 		else 
 		{
-		   if (split[0].equals("lw") || split[0].equals("sw") || split[0].equals("lui"))	
+		   if (specialCase(split[0]))	
 		   {   
-			 if (! (split.length ==3))  
-				return false ;	 
-		   }
-		   else if (split[0].equals("jr"))
-		   {	   
-			   if (split.length != 2)
-				   return false ;
+			 if (split[0].equals("lw") || split[0].equals("lui") || split[0].equals("sw"))  
+			 {	 
+			   if ( split.length !=3)  
+			 	return false ;	 
+			 }  
+			 else
+			 { 	 
+				 if (split.length != 2)
+					 return false ;
+			 }
 		   }
 		   else
 		   {	   
 		       if (!(GetNumberOfArguments(map.get(split[0])) == split.length-1))
-		       {	
 		         return false ;
-		       }
 		   }
-		 }
+		}
 		return true ;
 	}
 	public static boolean checkArg (String [] split)
@@ -110,7 +102,7 @@ public class MipsParser {
 	   {	  
 		   if (specialCase(split[0]))
 		   { 
-			  if( !split[1].contains("$") || ! split[2].contains("$") ) 
+			  if( ! (Character.toString(split[1].charAt(0)).contains("$")) || ! split[2].contains("$") ) 
 				  return false ;
 			  if (! Character.toString(split[1].charAt(0)).equals("$"))
 				  return false ;
@@ -259,7 +251,6 @@ public class MipsParser {
 			}
 			else
 				return false ;
-			
 		}
 			
 	return true ;
@@ -283,7 +274,7 @@ public class MipsParser {
 	}
 	public static boolean specialCase (String type)
 	{
-		if (type.equals("sw") || type.equals("lw"))
+		if (type.equals("sw") || type.equals("lw") || type.equals("lui") || type.equals("jr"))
 			return true;
 		return false;
 	}
@@ -307,9 +298,6 @@ public class MipsParser {
 	    opcode.put("lui", 15);
 	    opcode.put("beq", 4);
 	    opcode.put("J", 2);
-	    
-	    
-
 	}
 	public static void initialize()
 	{
@@ -346,6 +334,34 @@ public class MipsParser {
 	    {
 	        return false;
 	    }
+	}
+	public static boolean check (String [] split)
+	{
+		for (int i = 0 ; i<split.length; i++)
+		{	
+		  if (split[i].contains("$"))
+		  { 	  
+			  if (!valid(split[i]))
+				  return false;
+		  }
+
+		} 
+		if ( map.get(split[0]).equals("R") && !specialCase(split[0]) )
+		{	  
+			 for(int i = 0 ; i<split.length;i++)  
+			 {	 
+				 if (isStringInt(split[i]) )
+						 return false;
+			 } 
+		}
+		return true ;
+	}
+	public static boolean valid (String x)
+	{
+		int index = x.indexOf("$");
+		if (Character.toString(x.charAt(index+1)).equals("s") ||Character.toString(x.charAt(index+1)).equals("t") || Character.toString(x.charAt(index+1)).equals("0"))
+		  return true ;
+		return false ;
 	}
 	
 }
