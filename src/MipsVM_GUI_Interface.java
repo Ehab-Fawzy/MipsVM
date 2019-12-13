@@ -65,6 +65,7 @@ public class MipsVM_GUI_Interface {
 	
 		updateMemory();
 		updateRegisterFile();
+		MipsVM_GUI.scrollUP();
 		
 		cutInstructions(); pc = 0; labelCnt = 0;
 	}
@@ -97,6 +98,7 @@ public class MipsVM_GUI_Interface {
 				MipsVM_GUI.regValue.append( "0x" + Integer.toHexString( REG.getData(i) ) + "\n" );
 			}
 		}
+		MipsVM_GUI.scrollUP();
 	}
 	
 	private static String getRegisterName( Integer registerNumber ) {
@@ -149,6 +151,7 @@ public class MipsVM_GUI_Interface {
 				MipsVM_GUI.DataSegmentValues.append( "" + "0x" + Integer.toHexString( MEM.getValue(itr) ) + "\n" );
 			}
 		}
+		MipsVM_GUI.scrollUP();
 	}
 	
 	public static boolean parseAll() {
@@ -178,7 +181,7 @@ public class MipsVM_GUI_Interface {
 		
 		int copyPC = pc / 4;
 		
-		Character instructionType = instructionList.get(copyPC).charAt(0);
+		Character instructionType = MipsParser.getType( instructionList.get(copyPC) ).charAt(0) ;
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(copyPC) );
 		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + pc ) );
 		MipsVM_GUI.typeTxt.setText( instructionType + " - Type" );
@@ -194,6 +197,10 @@ public class MipsVM_GUI_Interface {
 			MipsVM_GUI.writeJtype( word );
 		}
 		
+		updateRegisterFile();
+		updateMemory();
+		MipsVM_GUI.scrollUP();
+		
 		if ( pc >= 4*instructionList.size() ) {
 			MipsVM_GUI.compile.setEnabled(true);
 			MipsVM_GUI.nextStep.setEnabled(false);
@@ -202,8 +209,7 @@ public class MipsVM_GUI_Interface {
 			MipsVM_GUI.showMessage( "Program Halt Successfully" , "Program State");
 		}
 		
-		updateRegisterFile();
-		updateMemory();
+		//int pos = MipsVM_GUI.reg
 	}
 	
 	public static void runAll() {

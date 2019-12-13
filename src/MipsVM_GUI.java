@@ -52,7 +52,7 @@ public class MipsVM_GUI {
 	private JSeparator separator , separator_1;
 	public static JButton runAll , nextStep , compile;
 	public static JTextField txtAdds , typeTxt , pcTxt;
-	private JScrollPane registerScroll , TextEditor , TextSegment , DataSegment;
+	public static JScrollPane registerScroll , TextEditor , TextSegment , DataSegment;
 	public static JTextArea regValue , regName , textSegmentValues , DataSegmentValues , codeArea;
 	
 	private TextLineNumber tln , textSegmentTLN , dataSegmentTLN;
@@ -94,12 +94,6 @@ public class MipsVM_GUI {
 		runAll.setEnabled(false);
 		
 		MipsVM_GUI_Interface.init();
-		
-		regName.setCaretPosition(0);
-		regValue.setCaretPosition(0);
-		codeArea.setCaretPosition(0);
-		textSegmentValues.setCaretPosition(0);
-		DataSegmentValues.setCaretPosition(0);	
 		
 		regD.setSelected(true);
 		dataD.setSelected(true);
@@ -196,6 +190,7 @@ public class MipsVM_GUI {
 						runAll.setEnabled(true);
 						compile.setEnabled(false);
 						rightPage.setSelectedIndex(0);
+						scrollUP();
 					}
 				}
 				else {
@@ -372,9 +367,7 @@ public class MipsVM_GUI {
 				clearTable();
 				MipsVM_GUI_Interface.clear();
 				
-				codeArea.setCaretPosition(0);
-				regValue.setCaretPosition(0);
-				DataSegmentValues.setCaretPosition(0);
+				scrollUP();
 			}
 		});
 		File.add(newM);
@@ -400,7 +393,6 @@ public class MipsVM_GUI {
 						}
 						codeArea.setText(txt);
 						rightPage.setSelectedIndex(2);
-						codeArea.setCaretPosition(0);
 						
 						infile.close();
 					} catch (FileNotFoundException e1) {
@@ -408,7 +400,7 @@ public class MipsVM_GUI {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
+					scrollUP();
 				}
 			}
 		});
@@ -446,7 +438,7 @@ public class MipsVM_GUI {
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
+					scrollUP();
 				}
 			}
 		});
@@ -473,6 +465,7 @@ public class MipsVM_GUI {
 				regB.setSelected(true);
 				regD.setSelected(false);
 				regH.setSelected(false);
+				scrollUP();
 			}
 		});
 		registerFileM.add(regB);
@@ -484,6 +477,7 @@ public class MipsVM_GUI {
 				regB.setSelected(false);
 				regD.setSelected(true);
 				regH.setSelected(false);
+				scrollUP();
 			}
 		});
 		registerFileM.add(regD);
@@ -495,6 +489,7 @@ public class MipsVM_GUI {
 				regB.setSelected(false);
 				regD.setSelected(false);
 				regH.setSelected(true);
+				scrollUP();
 			}
 		});
 		registerFileM.add(regH);
@@ -661,6 +656,10 @@ public class MipsVM_GUI {
 	}
 	
 	public static void scrollUP() {
-		//codeArea;
+		codeArea.setCaretPosition(0);
+		regValue.setCaretPosition(0);
+		regName.setCaretPosition(0);
+		textSegmentValues.setCaretPosition(0);
+		DataSegmentValues.setCaretPosition(0);
 	}
 }
