@@ -322,7 +322,7 @@ public class Parser2 {
 	public static void removeSpaces (String [] split)
 	{
 		for (int i = 0 ; i< split.length ; i++) {
-		   split[0].replaceAll("\\s","");}
+		  split[0] = split[0].replaceAll("\\s","");}
 	}
 	public static void SetFuncAndOpcode ()
 	{
@@ -354,5 +354,5 @@ public class Parser2 {
 	}
 
 	
-	}
+}
 
