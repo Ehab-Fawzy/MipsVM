@@ -162,7 +162,7 @@ public class MipsVM_GUI_Interface {
 			}
 			MipsInstructions object = parser.parse( instructionList.get(i) );
 			if ( object == null ) {
-				reportError( "ERROR in line " + (i+1) );
+				reportError( "ERROR in instruction (" + instructionList.get( i ) + ")" );
 				return false;
 			}
 			else {
@@ -176,13 +176,22 @@ public class MipsVM_GUI_Interface {
 		
 		if ( isLabel( instructionList.get(pc/4) ) ) {
 			pc += 4;
+			if ( pc/4 > instructionSet.size() ) {
+				MipsVM_GUI.compile.setEnabled(true);
+				MipsVM_GUI.nextStep.setEnabled(false);
+				MipsVM_GUI.runAll.setEnabled(false);
+				
+				MipsVM_GUI.showMessage( "Program Halt Successfully" , "Program State");
+				return;
+			}
 		}
+		
 		
 		int copyPC = pc / 4;
 		
 		Character instructionType = MipsParser.getType( instructionList.get(copyPC) ).charAt(0) ;
 		MipsVM_GUI.txtAdds.setText( instructionList.elementAt(copyPC) );
-		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + pc ) );
+		MipsVM_GUI.pcTxt.setText( String.valueOf( "0x" + Integer.toHexString( pc ) ) );
 		MipsVM_GUI.typeTxt.setText( instructionType + " - Type" );
 
 		String word = processor.execute( instructionSet.get(copyPC) );
